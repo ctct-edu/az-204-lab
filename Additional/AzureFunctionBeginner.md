@@ -181,3 +181,28 @@ Windows 11 デスクトップでタスク バーを探します。 タスク バ
 #### 確認
 
 この演習では、Azure 関数 アプリを作成し、コードをクラウドにデプロイしました。
+
+
+
+#### 参考
+
+この演習の実行環境は以下が必要です。
+
+- Azure サブスクリプション。 
+
+- サポートされているプラットフォームのいずれかでのVisual Studio Code。
+
+- [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) がターゲット フレームワークです。
+
+- Visual Studio Code 用の [C# 開発キット](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)
+
+- Visual Studio Code 用 [Azure Functions 拡張機能](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions)。
+
+- Azure Functions Core Tools バージョン 4.x。 ターミナルで次のコマンドを実行して、Azure Functions Core Tools をシステムにインストールします。 他のプラットフォームでのインストール手順については [GitHub の Azure Function Core Tools](https://github.com/Azure/azure-functions-core-tools?tab=readme-ov-file#installing) を参照してください。
+
+  ```
+  winget uninstall Microsoft.Azure.FunctionsCoreTools
+  winget install Microsoft.Azure.FunctionsCoreTools
+  ```
+
+## 
