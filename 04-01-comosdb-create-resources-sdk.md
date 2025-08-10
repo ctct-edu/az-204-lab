@@ -26,7 +26,7 @@
 
     ・「ストレージアカウントは不要です」を選択
 
-    ・「ストレージ アカウントのサブスクリプション」で「AZ-204T00-A CSR1」を選択し「適用をクリック」
+    ・「サブスクリプション」をドロップダウンにて選択し「適用をクリック」
 
     クラウド シェルは、Azure portal の下部にあるウィンドウにコマンド ライン インターフェイスを提供します。
 
@@ -261,7 +261,7 @@
  5. **ADD THE ITEM TO THE CONTAINER** コメントの後のスペースに次のコードを追加します。
 
     ```
-    ItemResponse<Product createResponse = await container.CreateItemAsync(
+    ItemResponse<Product> createResponse = await container.CreateItemAsync(
         item: newItem,
         partitionKey: new PartitionKey(newItem.id)
     );
