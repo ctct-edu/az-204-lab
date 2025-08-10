@@ -111,7 +111,7 @@
 
 
 
-1. クラウド シェルで、「**code index.html**」と入力してエディターを開きます。**<h1>** 見出しタグを見つけて、 *[Azure App Service - Sample Static HTML Site]* を *[Azure App Service Updated*] に変更するか、その他の任意のものに変更します。
+1. クラウド シェルで、「**code index.html**」と入力してエディターを開きます。**h1** 見出しタグを見つけて、 *[Azure App Service - Sample Static HTML Site]* を *[Azure App Service Updated*] に変更するか、その他の任意のものに変更します。
 
 2. コマンド**ctrl-s**を使用して保存し、**ctrl-q**を使用して終了します。
 
