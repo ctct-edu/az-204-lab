@@ -1,126 +1,140 @@
----
-lab:
-    topic: Azure App Service
-    title: 'Swap deployment slots in Azure App Service'
-    description: 'Learn how to swap deployment slots in Azure App Service. In this exercise you: deploy a simple app to App Service; make a small change to the app and deploy that to a staging slot; and finally swap the slots so the updated app is in production.'
----
+# Azure App Service でデプロイ スロットを交換する
 
-# Swap deployment slots in Azure App Service
 
-In this exercise, you deploy a static HTML website to Azure App Service, create a staging deployment slot, make changes to the code and deploy them to the staging slot, and then swap the staging and production slots to promote the changes to production. You learn how to use deployment slots for safe application updates and blue-green deployments.
 
-Tasks performed in this exercise:
+この演習では、静的 HTML Web サイトを Azure App Service にデプロイし、ステージング デプロイ スロットを作成し、コードに変更を加えてステージング スロットにデプロイし、ステージング スロットと運用スロットを交換して、変更を運用環境に昇格させます。安全なアプリケーション更新とブルーグリーンデプロイのためにデプロイスロットを使用する方法を学習します。
 
-* Download and deploy the sample app to Azure App Service.
-* Create a staging deployment slot.
-* Make a change to the sample app and deploy it to the staging slot.
-* Swap the staging and default production slots to move the changes to the production slot.
+この演習で実行されるタスク:
 
-This exercise takes approximately **30** minutes to complete.
+- サンプル アプリをダウンロードして Azure App Service にデプロイします。
+- ステージング展開スロットを作成します。
+- サンプル アプリに変更を加え、ステージング スロットにデプロイします。
+- ステージング スロットとデフォルトの実動スロットを入れ替えて、変更を実動スロットに移動します。
 
-## Download and deploy the sample app
+この演習は完了するまでに約**30**分かかります。
 
-In this section you download the sample app and set variables to make the commands easier to enter, and then create an Azure App Service resource and deploy a static HTML site using Azure CLI commands.
 
-1. In your browser navigate to the Azure portal [https://portal.azure.com](https://portal.azure.com); signing in with your Azure credentials if prompted.
 
-1. Use the **[\>_]** button to the right of the search bar at the top of the page to create a new cloud shell in the Azure portal, selecting a ***Bash*** environment. The cloud shell provides a command line interface in a pane at the bottom of the Azure portal.
+## サンプル アプリをダウンロードしてデプロイする
 
-    > **Note**: If you have previously created a cloud shell that uses a *PowerShell* environment, switch it to ***Bash***.
 
-1. In the cloud shell toolbar, in the **Settings** menu, select **Go to Classic version** (this is required to use the code editor).
 
-1. Run the following **git** command to clone the sample app repository.
+このセクションでは、サンプル アプリをダウンロードし、コマンドを入力しやすくするための変数を設定し、Azure CLI コマンドを使用して Azure App Service リソースを作成し、静的 HTML サイトをデプロイします。
 
-    ```bash
-    git clone https://github.com/Azure-Samples/html-docs-hello-world.git
-    ```
+1. ブラウザーで Azure portal [https://portal.azure.com](https://portal.azure.com/) に移動します。プロンプトが表示されたら、Azure 資格情報を使用してサインインします。
 
-1. Set variables to hold the resource group and app names by running the following commands. You can replace the **rg-mywebapp** value for **resourceGroup** if you have a resource group you want to use. Make note of the value of the **appName** that is displayed after the commands run, you'll need it later in this exercise.
+2. ページ上部の検索バーの右側にある **[>_]** ボタンを使用して、Azure portal で新しいクラウド シェルを作成し、***Bash*** 環境を選択します。クラウド シェルは、Azure portal の下部にあるウィンドウにコマンド ライン インターフェイスを提供します。
 
-    ```bash
-    resourceGroup=rg-mywebapp
+   > **注**: *PowerShell* 環境を使用するクラウド シェルを以前に作成した場合は、***Bash*** に切り替えます。
 
-    appName=mywebapp$RANDOM
-    echo $appName
-    ```
+3. クラウド シェル ツール バーの [**設定**] メニューで、[**クラシック バージョンに移動**] を選択します (これはコード エディターを使用するために必要です)。
 
-1. Navigate to the directory that contains the sample code and run the **az webapp up** command. **Note:** This command might take a few minutes to run.
+4. 次の **git** コマンドを実行して、サンプル アプリ リポジトリの複製を行います。
 
-    ```bash
-    cd html-docs-hello-world
+   ```
+   git clone https://github.com/Azure-Samples/html-docs-hello-world.git
+   ```
 
-    az webapp up -g $resourceGroup -n $appName --sku P0V3 --html
-    ```
+   
 
-    Now that your deployment has finished it's time to view the web app.
+5. 次のコマンドを実行して、リソース グループとアプリ名を保持する変数を設定します。使用するリソースグループがある場合は、**resourceGroup** の **rg-mywebapp** 値を置き換えることができます。コマンドの実行後に表示される **appName** の値をメモしておきます。この値は、この演習の後半で必要になります。
 
-1. In the Azure portal navigate to the web app you deployed. You can enter the name you noted earlier in the **Search resources, services, and docs (G + /)** search bar, and select the resource from the list.
+   ```
+   resourceGroup=rg-mywebapp
+   
+   appName=mywebapp$RANDOM
+   echo $appName
+   ```
 
-1. Select the link to your web app located in the **Default domain** field in the **Essentials** section. The link will open the site in a new tab.
+   
 
-## Deploy updated code to a deployment slot
+6. サンプル コードを含むディレクトリに移動し、**az webapp up** コマンドを実行します。**手記：**このコマンドの実行には数分かかる場合があります。
 
-In this section you create a deployment slot, modify the HTML in the app, and deploy the updated code to the new deployment slot.
+   ```
+   cd html-docs-hello-world
+   
+   az webapp up -g $resourceGroup -n $appName --sku P0V3 --html
+   ```
 
-### Create a deployment slot 
+   
 
-1. Return to the tab with the Azure portal and cloud shell.
+   デプロイが完了したので、Web アプリを表示します。
 
-1. Enter the following command in the cloud shell to create a deployment slot named *staging*.
+7. Azure portal で、デプロイした Web アプリに移動します。**[リソース、サービス、ドキュメントの検索 (G + /)]** 検索バーに先ほどメモした名前を入力し、一覧からリソースを選択できます。
 
-    ```bash
-    az webapp deployment slot create -n $appName -g $resourceGroup --slot staging
-    ```
+8. [**Essentials**] セクションの [**既定のドメイン]** フィールドにある Web アプリへのリンクを選択します。リンクをクリックすると、サイトが新しいタブで開きます。
 
-1. Wait for the command to finish, and then select **Deployment > Deployment slots** in the left menu to view the deployment slots for your web app. Note the name of the new slot contains *-staging* appended to name of your web app
+## 更新されたコードをデプロイ スロットにデプロイする
 
-### Update code and deploy to the staging slot
 
-1. In the cloud shell, type **code index.html** to open the editor. Locate the **\<h1\>** heading tag, and change *Azure App Service - Sample Static HTML Site* to *Azure App Service Staging Slot* - or to anything else that you'd like.
 
-1. Use the commands **ctrl-s** to save, and **ctrl-q** to exit.
+このセクションでは、デプロイ スロットを作成し、アプリの HTML を変更し、更新されたコードを新しいデプロイ スロットにデプロイします。
 
-1. In the cloud shell run the following command to create a zip file of the updated project. A zip,  or a web application resource (WAR), file is needed for the next step.
+### デプロイスロットの作成
 
-    ```bash
-    zip -r stagingcode.zip .
-    ```
 
-1. Run the following command in the cloud shell to deploy your updates to the staging slot.
 
-    ```bash
-    az webapp deploy -g $resourceGroup -n $appName --src-path ./stagingcode.zip --slot staging
-    ```
+1. Azure portal と Cloud Shell のタブに戻ります。
 
-1. Select **Deployment > Deployment slots** in the left menu of your web app, and then select the staging slot you created earlier.
+2. クラウドシェルで次のコマンドを入力して、*staging* という名前のデプロイスロットを作成します。
 
-1. Select the link in the **Default domain** field in the **Essentials** section. The link will open the web site for the staging slot in a new tab.
+   ```
+   az webapp deployment slot create -n $appName -g $resourceGroup --slot staging
+   ```
 
-## Swap the staging and production slots
+   
 
-You can perform a swap in the Azure portal with the **Swap** option in the toolbar. The **Swap** option will appear in the toolbar if you select **Overview** or **Deployment > Deployment slots** in the left menu.
+3. コマンドが完了するまで待ってから、左側のメニューで **[デプロイ] > [デプロイ スロット**] を選択して、Web アプリのデプロイ スロットを表示します。新しいスロットの名前には、Web アプリの名前に *-staging* が追加されていることに注意してください
 
-1. In the Azure portal, select **Swap** in the toolbar to open the **Swap** panel.
+### コードを更新してステージングスロットにデプロイする
 
-1. Review the settings in the swap panel. The **Source** should show the **-staging** slot, and the **Target** should show the default production slot.
 
-    ![Screenshot of the Swap panel.](./media/02/app-service-swap-panel.png)
 
-1. Select **Start Swap** and wait for the operation to complete. You can track completion in the **Notifications** panel that you can open by selecting the bell icon at the top of the portal.
+1. クラウド シェルで、「**コード index.html**」と入力してエディターを開きます。**<h1>** 見出しタグを見つけて、 *[Azure App Service - サンプル静的 HTML サイト]* を *[Azure App Service ステージング スロット*] に変更するか、その他の任意のものに変更します。
 
-1. To verify the swap navigate to the web app you deployed. Enter the web app name you created earlier (for example, *mywebapp12360*) in the **Search resources, services, and docs (G + /)** search bar, and then select the resource from the list.
+2. コマンド**ctrl-s**を使用して保存し、**ctrl-q**を使用して終了します。
 
-1. Select the link to your web app located in the **Default domain** field in the **Essentials** section. The link will open the site (production slot) in a new tab.
+3. クラウド シェルで、次のコマンドを実行して、更新されたプロジェクトの zip ファイルを作成します。次のステップでは、zip ファイルまたは Web アプリケーションリソース (WAR) ファイルが必要です。
 
-1. Verify your changes, you may need to refresh the page for them to appear.
+   ```
+   zip -r stagingcode.zip .
+   ```
 
-## Clean up resources
+   
 
-Now that you finished the exercise, you should delete the cloud resources you created to avoid unnecessary resource usage.
+4. クラウド シェルで次のコマンドを実行して、更新プログラムをステージング スロットにデプロイします。
 
-1. Navigate to the resource group you created and view the contents of the resources used in this exercise.
-1. On the toolbar, select **Delete resource group**.
-1. Enter the resource group name and confirm that you want to delete it.
+   ```
+   az webapp deploy -g $resourceGroup -n $appName --src-path ./stagingcode.zip --slot staging
+   ```
 
-> **CAUTION:** Deleting a resource group deletes all resources contained within it. If you chose an existing resource group for this exercise, any existing resources outside the scope of this exercise will also be deleted.
+   
+
+5. Web アプリの左側のメニューで **[デプロイ] > [デプロイ スロット**] を選択し、前に作成したステージング スロットを選択します。
+
+6. [**Essentials**] セクションの [**既定のドメイン]** フィールドでリンクを選択します。リンクをクリックすると、ステージングスロットのWebサイトが新しいタブで開きます。
+
+## ステージングスロットと本番スロットを入れ替える
+
+
+
+ツールバーの **[スワップ]** オプションを使用して、Azure portal でスワップを実行できます。左側のメニューで [**概要**] または **[展開] > [展開スロット]** を選択すると、ツールバーに [**スワップ]** オプションが表示されます。
+
+1. Azure portal で、ツール バーの **[スワップ**] を選択して [**スワップ]** パネルを開きます。
+2. スワップパネルの設定を確認します。**Source** には **-staging** スロットが表示され、**Target** にはデフォルトの本番スロットが表示されます。
+3. [**スワップの開始**] を選択し、操作が完了するまで待ちます。ポータルの上部にあるベル アイコンを選択して開くことができる **[通知]** パネルで完了を追跡できます。
+4. スワップを確認するには、デプロイした Web アプリに移動します。前に作成した Web アプリ名 (*例: mywebapp12360*) を [**リソース、サービス、ドキュメントの検索] (G + /)** 検索バーに入力し、一覧からリソースを選択します。
+5. [**Essentials**] セクションの **[既定のドメイン]** フィールドにある Web アプリへのリンクを選択します。リンクをクリックすると、サイト (運用スロット) が新しいタブで開きます。
+6. 変更を確認し、表示するにはページを更新する必要がある場合があります。
+
+
+
+## リソースをクリーンアップする
+
+演習が終了したので、不要なリソースの使用を避けるために、作成したクラウド リソースを削除する必要があります。
+
+1. 作成したリソース・グループに移動し、この演習で使用したリソースの内容を表示します。
+2. ツール バーで、**リソース グループの削除** を選択します。
+3. リソース グループ名を入力し、削除することを確認します。
+
+> **注意：** リソース グループを削除すると、その中に含まれるすべてのリソースが削除されます。この演習で既存のリソース グループを選択した場合、この演習の範囲外の既存のリソースも削除されます。

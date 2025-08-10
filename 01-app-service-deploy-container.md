@@ -1,73 +1,72 @@
----
-lab:
-    topic: Azure App Service
-    title: 'Deploy a containerized app to Azure App Service'
-    description: 'Learn how to deploy a containerized app to Azure App Service.'
----
+# コンテナー化されたアプリを Azure App Service にデプロイする
 
-# Deploy a containerized app to Azure App Service
+この演習では、Microsoft Container Registry からコンテナー イメージを指定して、コンテナー化されたアプリケーションを実行するように構成された Azure App Service Web アプリを作成します。コンテナー設定を構成し、アプリをデプロイし、コンテナー化されたアプリケーションが Azure App Service で正常に実行されていることを確認する方法について説明します。
 
-In this exercise, you create an Azure App Service web app configured to run a containerized application by specifying a container image from Microsoft Container Registry. You learn how to configure container settings, deploy the app, and verify that the containerized application is running successfully in Azure App Service.
+この演習で実行されるタスク:
 
-Tasks performed in this exercise:
+- Azure App Service リソースを作成し、コンテナー化されたアプリをデプロイする
+- 結果を見る
+- リソースをクリーンアップする
 
-* Create an Azure App Service resource and deploy a containerized app
-* View the results
-* Clean up resources
+この演習は完了するまでに約 **15** 分かかります。
 
-This exercise takes approximately **15** minutes to complete.
+## Web アプリ リソースを作成する
 
-## Create a web app resource
 
-1. In your browser navigate to the Azure portal [https://portal.azure.com](https://portal.azure.com); signing in with your Azure credentials if prompted.
-1. Select the **+ Create a resource** located in the **Azure Services** heading near the top of the homepage. 
-1. In the **Search the Marketplace** search bar, enter *web app* and press **enter** to start searching.
-1. In the Web App tile, select the **Create** drop-down and then select **Web App**.
 
-    ![Screenshot of the Web App tile.](./media/01/create-web-app-tile.png)
+1. ブラウザーで Azure portal [https://portal.azure.com](https://portal.azure.com/) に移動します。プロンプトが表示されたら、Azure 資格情報を使用してサインインします。
 
-    Selecting **Create** will open a template with a few tabs to fill out with information about your deployment. The following steps walk you through what changes to make in the relevant tabs.
+2. ホームページの上部近くにある **[Azure サービス**] 見出しにある **[+ リソースの作成**] を選択します。
 
-1. Fill out the **Basics** tab with the information in the following table:
+3. [**マーケットプレイスの検索**] 検索バーに「*Web アプリ*」と入力し、**Enter** キーを押して検索を開始します。
 
-    | Setting | Action |
-    |--|--|
-    | **Subscription** | Retain the default value. |
-    | **Resource group** | Select Create new, enter `rg-WebApp`, and then select OK. You can also select an existing resource group if you prefer. |
-    | **Name** | Enter a unique name, for example **your-initials-containerwebapp**. Replace *your-initials* with your initials, or some other value. The name needs to be unique, so it may require a few changes. |
-    | Slider under **Name** setting | Select the slider to turn it off. This slider only appears in some Azure configurations. |
-    | **Publish** | Select the **Container** option. |
-    | **Operating System** | Ensure **Linux** is selected. |
-    | **Region** | Retain the default selection, or choose a region near you. |
-    | **Linux Plan** | Retain the default selection. |
-    | **Pricing plan** | Select the drop-down and choose the **Free F1** plan. |
+4. Web アプリ タイルで、**作成** ドロップダウンを選択し、**Web アプリ** を選択します。
 
-1. Select, or navigate to, the **Container** tab, and enter the information in the following table:
+   [**作成**] を選択すると、デプロイに関する情報を入力するためのいくつかのタブを含むテンプレートが開きます。次の手順では、関連するタブで行う変更について説明します。
 
-    | Setting | Action |
-    |--|--|
-    | **Sidecar support** | Slider should be set to the **off** position. |
-    | **Image Source** | Select **Other container registries**. |
-    | **Access Type** | Retain default **Public** selection. |
-    | **Registry server URL** | Enter `mcr.microsoft.com/k8se`. |
-    | **Image and Tag** | Enter `quickstart:latest`. |
-    | **Startup Command** | Leave blank. |
+5. [**基本]** タブに、次の表の情報を入力します
 
-1. Select the **Review + create** tab.
-1. Review the selections you made, and then select the **Create** button.
+   | 設定                          | アクション                                                   |
+   | ----------------------------- | ------------------------------------------------------------ |
+   | **予約**                      | デフォルト値を保持します。                                   |
+   | **リソース グループ**         | [新規作成] を選択し、 と入力して [OK] を選択します。必要に応じて、既存のリソース グループを選択することもできます。`rg-WebApp` |
+   | **名前**                      | 一意の名前を入力します (**例: your-initials-containerwebapp**)。*your-initials を* your initial またはその他の値に置き換えます。名前は一意である必要があるため、いくつかの変更が必要になる場合があります。 |
+   | **名前**設定の下のスライダー  | スライダーを選択してオフにします。このスライダーは、一部の Azure 構成でのみ表示されます。 |
+   | **著す**                      | [**コンテナ]** オプションを選択します。                      |
+   | **オペレーティング システム** | **Linux** が選択されていることを確認します。                 |
+   | **地域**                      | 既定の選択をそのままにするか、近くの地域を選択します。       |
+   | **Linuxプラン**               | 既定の選択を保持します。                                     |
+   | **料金プラン**                | ドロップダウンを選択し、**無料の F1** プランを選択します。   |
 
-It may take a few minutes for the deployment to complete. When it is finished select the **Go to resource** button.
+6. [**コンテナ]** タブを選択または移動し、次の表に情報を入力します。
 
-Now that your deployment has finished it's time to view the web app. Select the link to your web app located next to the **Default domain** field in the **Essentials** section. The link will open the site in a new tab.
+   | 設定                          | アクション                                            |
+   | ----------------------------- | ----------------------------------------------------- |
+   | **サイドカーのサポート**      | スライダーは**オフ**の位置に設定する必要があります。  |
+   | **画像ソース**                | [**その他のコンテナー・レジストリー**] を選択します。 |
+   | **アクセスタイプ**            | デフォルトの**パブリック**選択を保持します。          |
+   | **レジストリ サーバーの URL** | 入る。`mcr.microsoft.com/k8se`                        |
+   | **画像とタグ**                | 入る。`quickstart:latest`                             |
+   | **起動コマンド**              | 空白のままにします。                                  |
 
->**Note:** It may take a few minutes for the deployed container app to run and display in the new tab.
+7. [**レビュー + 作成**] タブを選択します。
 
-## Clean up resources
+8. 選択した内容を確認し、[**作成**] ボタンを選択します。
 
-Now that you finished the exercise, you should delete the cloud resources you created to avoid unnecessary resource usage.
+デプロイが完了するまでに数分かかる場合があります。完了したら、**リソースに移動** ボタンを選択します。
 
-1. Navigate to the resource group you created and view the contents of the resources used in this exercise.
-1. On the toolbar, select **Delete resource group**.
-1. Enter the resource group name and confirm that you want to delete it.
+デプロイが完了したので、Web アプリを表示します。[**Essentials**] セクションの [**既定のドメイン]** フィールドの横にある Web アプリへのリンクを選択します。リンクをクリックすると、サイトが新しいタブで開きます。
 
-> **CAUTION:** Deleting a resource group deletes all resources contained within it. If you chose an existing resource group for this exercise, any existing resources outside the scope of this exercise will also be deleted.
+> **手記：**デプロイされたコンテナー アプリが実行され、新しいタブに表示されるまでに数分かかる場合があります。
+
+
+
+## リソースをクリーンアップする
+
+演習が終了したので、不要なリソースの使用を避けるために、作成したクラウド リソースを削除する必要があります。
+
+1. 作成したリソース・グループに移動し、この演習で使用したリソースの内容を表示します。
+2. ツール バーで、**リソース グループの削除** を選択します。
+3. リソース グループ名を入力し、削除することを確認します。
+
+> **注意：** リソース グループを削除すると、その中に含まれるすべてのリソースが削除されます。この演習で既存のリソース グループを選択した場合、この演習の範囲外の既存のリソースも削除されます。
