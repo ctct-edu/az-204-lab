@@ -15,8 +15,6 @@
 
  ## Azure Container Registry リソースを作成する
 
- 
-
  1. ブラウザーで Azure portal [https://portal.azure.com](https://portal.azure.com/) に移動します。プロンプトが表示されたら、Azure 資格情報を使用してサインインします。
 
  2. ページ上部の検索バーの右側にある **[>_]** ボタンを使用して、Azure portal で新しいクラウド シェルを作成し、***Bash*** 環境を選択します。「作業の開始」ウィンドウが表示された場合、以下のように操作します。
@@ -27,23 +25,11 @@
 
      クラウド シェルは、Azure portal の下部にあるウィンドウにコマンド ライン インターフェイスを提供します。
 
- 3. 
-
-     **注**: *PowerShell* 環境を使用するクラウド シェルを以前に作成した場合は、***Bash*** に切り替えます。
-
- 4. この演習に必要なリソースのリソース グループを作成します。**myResourceGroup** をリソース グループに使用する名前に置き換えます。必要に応じて、**eastus** を近くのリージョンに置き換えることができます。使用するリソース・グループが既にある場合は、次のステップに進みます。
-
-    ```
-    az group create --location eastus --name myResourceGroup
-    ```
-
-    
-
- 5. 次のコマンドを実行して、基本的なコンテナーレジストリを作成します。レジストリ名は Azure 内で一意で、5 文字から 50 文字の英数字を含める必要があります。**myResourceGroup** を前に使用した名前に置き換え、**myContainerRegistry** を一意の値に置き換えます。
+ 5. 次のコマンドを実行して、基本的なコンテナーレジストリを作成します。レジストリ名は Azure 内で一意で、5 文字から 50 文字の英数字を含める必要があります。**myContainerRegistry** を一意の値に置き換えます。
 
     ```
     az acr create --resource-group myResourceGroup \
-        --name myContainerRegistry --sku Basic
+        --name mycontainerregistryXXXXXXXX --sku Basic
     ```
 
     
@@ -68,7 +54,7 @@
 
     ```
     az acr build --image sample/hello-world:v1  \
-        --registry myContainerRegistry \
+        --registry mycontainerregistryXXXXXXXX \
         --file Dockerfile .
     ```
 
@@ -102,7 +88,7 @@
  1. 次のコマンドを実行して、レジストリ内のリポジトリを一覧表示します。**myContainerRegistry** を前に作成した名前に置き換えます。
 
     ```
-    az acr repository list --name myContainerRegistry --output table
+    az acr repository list --name mycontainerregistryXXXXXXXX --output table
     ```
 
     
@@ -120,7 +106,7 @@
  2. 次のコマンドを実行して、**sample/hello-world** リポジトリのタグを一覧表示します。**myContainerRegistry** を前に使用した名前に置き換えます。
 
     ```
-    az acr repository show-tags --name myContainerRegistry \
+    az acr repository show-tags --name mycontainerregistryXXXXXXXX \
         --repository sample/hello-world --output table
     ```
 
@@ -143,7 +129,7 @@
  1. **az acr run** コマンドを使用して、コンテナー レジストリから *sample/hello-world:v1* コンテナー イメージを実行します。次の例では、**$Registry** を使用して、コマンドを実行するレジストリを指定します。**myContainerRegistry** を前に使用した名前に置き換えます。
 
     ```
-    az acr run --registry myContainerRegistry \
+    az acr run --registry mycontainerregistryXXXXXXXX \
         --cmd '$Registry/sample/hello-world:v1' /dev/null
     ```
 
