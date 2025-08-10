@@ -62,17 +62,18 @@
    ```
    cd html-docs-hello-world
    
+   az configure --defaults location=canadacentral
+   
    az appservice plan create \
-     -g $resourceGroup \
-     -n "${appName}-plan" \
-     --sku P0v3 \
-     --is-linux false
+     --resource-group $resourceGroup \
+     --name "${appName}-plan" \
+     --sku P0v3
      
    az webapp create \
-     -g $resourceGroup \
-     -n $appName \
+     --resource-group $resourceGroup \
+     --name $appName \
      --plan "${appName}-plan" \
-     --runtime "DOTNET|8.0"
+      --runtime "DOTNET|8"
    
    az webapp up -g $resourceGroup -n $appName --sku P0V3 --html
    ```
@@ -85,6 +86,8 @@
 
 7. [**要点**] セクションの [**既定のドメイン]** フィールドにある Web アプリへのリンクを選択します。リンクをクリックすると、サイトが新しいタブで開きます。
 
+
+
 ## 更新されたコードをデプロイ スロットにデプロイする
 
 
@@ -92,8 +95,6 @@
 このセクションでは、デプロイ スロットを作成し、アプリの HTML を変更し、更新されたコードを新しいデプロイ スロットにデプロイします。
 
 ### デプロイスロットの作成
-
-
 
 1. Azure portal と Cloud Shell のタブに戻ります。
 
@@ -107,15 +108,19 @@
 
 3. コマンドが完了するまで待ってから、左側のメニューで **[デプロイ] > [デプロイ スロット**] を選択して、Web アプリのデプロイ スロットを表示します。新しいスロットの名前には、Web アプリの名前に *-staging* が追加されていることに注意してください
 
+
+
 ### コードを更新してステージングスロットにデプロイする
 
 
 
-1. クラウド シェルで、「**code index.html**」と入力してエディターを開きます。**h1** 見出しタグを見つけて、 *[Azure App Service - Sample Static HTML Site]* を *[Azure App Service Updated*] に変更するか、その他の任意のものに変更します。
+1. クラウド シェルで、「**code index.html**」と入力してエディターを開きます。(ここで以前のエクスペリエンスに戻るよう要求された場合は従ってください。その後  cd html-docs-hello-world コマンドを実行してから再度 code index.html を実行する必要があります。
 
-2. コマンド**ctrl-s**を使用して保存し、**ctrl-q**を使用して終了します。
+2. **h1** 見出しタグを見つけて、 *[Azure App Service - Sample Static HTML Site]* を *[Azure App Service Updated*] に変更するか、その他の任意のものに変更します。
 
-3. クラウド シェルで、次のコマンドを実行して、更新されたプロジェクトの zip ファイルを作成します。次のステップでは、zip ファイルまたは Web アプリケーションリソース (WAR) ファイルが必要です。
+3. コマンド**ctrl-s**を使用して保存し、**ctrl-q**を使用して終了します。
+
+4. クラウド シェルで、次のコマンドを実行して、更新されたプロジェクトの zip ファイルを作成します。次のステップでは、zip ファイルまたは Web アプリケーションリソース (WAR) ファイルが必要です。
 
    ```
    zip -r stagingcode.zip .
@@ -123,7 +128,7 @@
 
    
 
-4. クラウド シェルで次のコマンドを実行して、更新プログラムをステージング スロットにデプロイします。
+5. クラウド シェルで次のコマンドを実行して、更新プログラムをステージング スロットにデプロイします。(もし手順1.で以前のエクスペリエンスに戻った場合は、resourceGroup=userXX および appName=(作成したwebアプリ名)を先に実施する必要があります)
 
    ```
    az webapp deploy -g $resourceGroup -n $appName --src-path ./stagingcode.zip --slot staging
@@ -131,9 +136,9 @@
 
    
 
-5. Web アプリの左側のメニューで **[デプロイ] > [デプロイ スロット**] を選択し、前に作成したステージング スロットを選択します。
+6. Web アプリの左側のメニューで **[デプロイ] > [デプロイ スロット**] を選択し、前に作成したステージング スロットを選択します。
 
-6. [**要点**] セクションの [**既定のドメイン]** フィールドでリンクを選択します。リンクをクリックすると、ステージングスロットのWebサイトが新しいタブで開きます。
+7. [**要点**] セクションの [**既定のドメイン]** フィールドでリンクを選択します。リンクをクリックすると、ステージングスロットのWebサイトが新しいタブで開きます。
 
 ## ステージングスロットと本番スロットを入れ替える
 
