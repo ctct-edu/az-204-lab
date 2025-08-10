@@ -168,7 +168,6 @@
 >    
 >    // CREATE THE COSMOS DB CLIENT USING THE ACCOUNT URL AND KEY
 >    
->    
 >    try
 >    {
 >        // CREATE A DATABASE IF IT DOESN'T ALREADY EXIST
@@ -204,8 +203,9 @@
 >        public string? name { get; set; }
 >        public string? description { get; set; }
 >    }
+>    
 >
->   
+> 
 >
 > 次に、プロジェクトの指定された領域にコードを追加して、クライアント、データベース、コンテナを作成し、コンテナにサンプル項目を追加します。
 >
@@ -222,7 +222,7 @@
 >    );
 >    ```
 >
->    
+> 
 >
 >    > 注: ベスト プラクティスは、*Azure ID* ライブラリの **DefaultAzureCredential** を使用することです。これには、サブスクリプションの設定方法に応じて、Azure で追加の構成要件が必要になる場合があります。
 >
@@ -233,7 +233,7 @@
 >    Console.WriteLine($"Created or retrieved database: {database.Id}");
 >    ```
 >
->    
+> 
 >
 > 3. **CREATE A CONTAINER WITH A SPECIFIED PARTITION KEY** コメントの後のスペースに次のコードを追加します。
 >
@@ -245,7 +245,7 @@
 >    Console.WriteLine($"Created or retrieved container: {container.Id}");
 >    ```
 >
->    
+> 
 >
 > 4. **DEFINE A TYPED ITEM (PRODUCT) TO ADD TO THE CONTAINER** コメントの後のスペースに次のコードを追加します。これにより、コンテナーに追加される項目が定義されます。
 >
@@ -258,7 +258,7 @@
 >    };
 >    ```
 >
->    
+> 
 >
 > 5. **ADD THE ITEM TO THE CONTAINER** コメントの後のスペースに次のコードを追加します。
 >
@@ -272,7 +272,7 @@
 >    Console.WriteLine($"Request charge: {createResponse.RequestCharge} RUs");
 >    ```
 >
->    
+> 
 >
 > 6. コードが完成したので、進行状況を保存し、**ctrl + s** を使用してファイルを保存し、**ctrl + q** を使用してエディターを終了します。
 >
@@ -282,7 +282,7 @@
 >    dotnet build
 >    ```
 >
->    
+> 
 >
 > プロジェクトが完了したので、次はアプリケーションを実行し、Azure portal で結果を確認します。
 >
@@ -301,7 +301,7 @@
 >    Request charge: 6.29 RUs
 >    ```
 >
->    
+> 
 >
 > 2. Azure portal で、前に作成した Azure Cosmos DB リソースに移動します。左側のナビゲーションで **[データ エクスプローラー]** を選択します。**データ エクスプローラー**で、 [**myDatabase**] を選択し、[**myContainer]** を展開します。作成した項目は、[**項目]** を選択すると表示できます。
 >
