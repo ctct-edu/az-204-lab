@@ -57,9 +57,11 @@
 
 2. **Visual Studio Code** を起動し、**[FIle] > [Open Folder...]** を選択し、上記の フォルダーを選択し、 **[Select Folder]** をクリックします。
 
-3. 
+3. **[Do you trust the authors of the files in this folder?]** ダイアログで  **[Trust the authers ～]** チェックボックスをオンにして **[Yes, I trust the authers]** をクリックしてください。
 
-4. ターミナル**>表示** を選択してターミナルを開きます。
+   ![](./media/Attention.jpg)
+
+4. 上のメニューで **Terminal>New Terminal** を選択してターミナルを開きます。
 
 5. VS Code ターミナルで次のコマンドを実行して、.NET コンソール アプリケーションを作成します。
 
@@ -84,7 +86,7 @@
 
 このセクションでは、前に記録したシークレットを保持する **.env** ファイルを作成および編集します。
 
-1. **[ファイル] > [新しいファイル...]** を選択し、プロジェクト フォルダーに *.env* という名前のファイルを作成します。
+1. 上のメニューで **[File] > [New FIle...]** を選択し、プロジェクト フォルダーに *.env* という名前のファイルを作成します。
 
 2. **.env** ファイルを開き、次のコードを追加します。**YOUR_CLIENT_ID**を置き換え、**YOUR_TENANT_ID**前に記録した値に置き換えます。
 
@@ -124,13 +126,15 @@
 
    
 
-2. Press **ctrl+s** to save your changes.
+2. **ctrl+s** を押して変更を保存します。
 
-### Add code to complete the application
+   
+
+### アプリケーションを完成させるためのコードを追加します
 
 
 
-1. Locate the **// ADD CODE TO DEFINE SCOPES AND CREATE CLIENT** comment and add the following code directly after the comment. Be sure to review the comments in the code.
+1. **「ADD CODE TO DEFINE SCOPES AND CREATE CLIENT」**コメントを見つけて、コメントの直後に次のコードを追加します。コード内のコメントを必ず確認してください。
 
    ```
    // Define the scopes required for authentication
@@ -145,7 +149,7 @@
 
    
 
-2. Locate the **// ADD CODE TO ACQUIRE AN ACCESS TOKEN** comment and add the following code directly after the comment. Be sure to review the comments in the code.
+2. **ADD CODE TO ACQUIRE AN ACCESS TOKEN** コメントを見つけて、コメントの直後に次のコードを追加します。コード内のコメントを必ず確認してください。
 
    ```
    // Attempt to acquire an access token silently or interactively
@@ -172,6 +176,8 @@
 
 3. **ctrl+s を押して**ファイルを保存し、**次に ctrl+q** を押してエディターを終了します。
 
+   
+
 ## アプリケーションを実行する
 
 
@@ -186,13 +192,13 @@
 
    
 
-2. アプリによって既定のブラウザーが開き、認証に使用するアカウントを選択するように求められます。複数のアカウントが一覧表示されている場合は、アプリで使用されているテナントに関連付けられているアカウントを選択します。
+2. アプリによって既定のブラウザーが開き、認証に使用するアカウントを選択するように求められます。ラボ環境のResourcesタブに記載された Username/Password をそれぞれクリックして、ラボの中に転記して認証します。
 
-3. 登録済みアプリに対して初めて認証する場合は、サインインしてプロファイルを読み取るためのアプリの承認、およびアクセス権を付与したデータへのアクセスを維持するためのアプリの承認を求める **[アクセス許可要求]** 通知が届きます。**[同意する]** を選択します。
+3. 登録済みアプリに対して初めて認証する場合は、サインインしてプロファイルを読み取るためのアプリの承認、およびアクセス権を付与したデータへのアクセスを維持するためのアプリの承認を求める [Permissions requested] 通知が届きます。**[Accept]** を選択します。
 
    ![](./Media/01-granting-permission.png)
 
-4. コンソールに次の例のような結果が表示されます。
+4. コンソールに次の例のような結果(アクセストークン)が表示されます。
 
    ```
    Access Token:
@@ -201,7 +207,7 @@
 
    
 
-5. アプリケーションを 2 回起動すると、「**アクセス許可が要求されました」**という通知が受信されなくなったことがわかります。以前に付与したアクセス許可がキャッシュされました。
+   再びアプリケーションを dotnet run起動すると、[Permissions requested] 通知が受信されないことがわかります。以前に付与したアクセス許可がキャッシュされました。
 
 ## 
 
