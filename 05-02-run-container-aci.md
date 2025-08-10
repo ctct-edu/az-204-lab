@@ -18,17 +18,14 @@
 
 1. ブラウザーで Azure portal [https://portal.azure.com](https://portal.azure.com/) に移動します。プロンプトが表示されたら、Azure 資格情報を使用してサインインします。
 
-2. ページ上部の検索バーの右側にある **[>_]** ボタンを使用して、Azure portal で新しいクラウド シェルを作成し、***Bash*** 環境を選択します。クラウド シェルは、Azure portal の下部にあるウィンドウにコマンド ライン インターフェイスを提供します。
+2. ページ上部の検索バーの右側にある **[>_]** ボタンを使用して、Azure portal で新しいクラウド シェルを作成し、***Bash*** 環境を選択します。「作業の開始」ウィンドウが表示された場合、以下のように操作します。
 
-   > **注**: *PowerShell* 環境を使用するクラウド シェルを以前に作成した場合は、***Bash*** に切り替えます。
+   ・「ストレージアカウントは不要です」を選択
 
-3. この演習に必要なリソースのリソース グループを作成します。**myResourceGroup** をリソース グループに使用する名前に置き換えます。必要に応じて、**eastus** を近くのリージョンに置き換えることができます。使用するリソース・グループが既にある場合は、次のステップに進みます。
+   ・「サブスクリプション」をドロップダウンにて選択し「適用をクリック」
 
-   ```
-   az group create --location eastus --name myResourceGroup
-   ```
+   クラウド シェルは、Azure portal の下部にあるウィンドウにコマンド ライン インターフェイスを提供します。
 
-   
 
 ## コンテナーの作成とデプロイ
 
@@ -36,22 +33,22 @@
 
 コンテナーを作成するには、名前、Docker イメージ、Azure リソース グループを **az container create** コマンドに指定します。コンテナーをインターネットに公開するには、DNS 名ラベルを指定します。
 
-1. 次のコマンドを実行して、コンテナーをインターネットに公開するために使用される DNS 名を作成します。DNS 名は一意である必要がある場合は、Cloud Shell からこのコマンドを実行して、一意の名前を保持する変数を作成します。
+1. 次のコマンドを実行して、コンテナーをインターネットに公開するために使用される DNS 名を作成します。DNS 名は一意である必要がある場合は、Cloud Shell からこのコマンドを実行して、一意の名前を保持する変数を作成します。(XXXXXXXXは修正してください)
 
    ```
-   DNS_NAME_LABEL=aci-example-$RANDOM
+   DNS_NAME_LABEL=aci-example-XXXXXXXX
    ```
 
    
 
-2. 次のコマンドを実行して、コンテナインスタンスを作成します。**myResourceGroup** と **myLocation** を前に使用した値に置き換えます。操作が完了するまでに数分かかります。
+2. 次のコマンドを実行して、コンテナインスタンスを作成します(XXXXXXXXは修正してください)。操作が完了するまでに数分かかります。
 
    ```
-   az container create --resource-group myResourceGroup \
+   az container create --resource-group myResourceGrouplodXXXXXXXX \
        --name mycontainer \
        --image mcr.microsoft.com/azuredocs/aci-helloworld \
        --ports 80 \
-       --dns-name-label $DNS_NAME_LABEL --location myLocation \
+       --dns-name-label $DNS_NAME_LABEL --location EastUS \
        --os-type Linux \
        --cpu 1 \
        --memory 1.5 
@@ -69,10 +66,10 @@
 
 コンテナーのビルド状態は、**az container show** コマンドで確認できます。
 
-1. 次のコマンドを実行して、作成したコンテナーのプロビジョニング状態を確認します。**myResourceGroup** を前に使用した値に置き換えます。
+1. 次のコマンドを実行して、作成したコンテナーのプロビジョニング状態を確認します(XXXXXXXXは修正してください)。
 
    ```
-   az container show --resource-group myResourceGroup \
+   az container show --resource-group myResourceGrouplodXXXXXXXX \
        --name mycontainer \
        --query "{FQDN:ipAddress.fqdn,ProvisioningState:provisioningState}" \
        --out table 
