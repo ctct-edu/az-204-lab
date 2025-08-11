@@ -27,31 +27,23 @@
 
    > **注**: *PowerShell* 環境を使用するクラウド シェルを以前に作成した場合は、***Bash*** に切り替えます。
 
-3. この演習に必要なリソースのリソース グループを作成します。**myResourceGroup** を、リソース グループに使用する名前に置き換えます。必要に応じて、**eastus2** を近くのリージョンに置き換えることができます。使用するリソース グループが既にある場合は、次の手順に進みます。
-
-   ```azurecli
-   az group create --location eastus2 --name myResourceGroup
-   ```
-
-   
-
-4. CLI コマンドで使用する変数をいくつか作成すると、入力の量が減ります。**myLocation** を前に選択した値に置き換えます。APIM 名はグローバルに一意の名前である必要があり、次のスクリプトはランダムな文字列を生成します。**myEmail** をアクセスできるメール アドレスに置き換えます。
+3. CLI コマンドで使用する変数をいくつか作成すると、入力の量が減ります。**myLocation** を前に選択した値に置き換えます。APIM 名はグローバルに一意の名前である必要があり、次のスクリプトはランダムな文字列を生成します。**myEmail** をアクセスできるメール アドレスに置き換えます。
 
    ```
-   myApiName=import-apim-$RANDOM
-   myLocation=myLocation
+   myApiName=import-apim-XXXXXXXX
+   myLocation=eastus2
    myEmail=myEmail
    ```
 
    
 
-5. APIM インスタンスを作成します。**az apim create** コマンドを使用して、インスタンスを作成します。**myResourceGroup** を前に選択した値に置き換えます。
+5. APIM インスタンスを作成します。**az apim create** コマンドを使用して、インスタンスを作成します。
 
    ```
    az apim create -n $myApiName \
        --location $myLocation \
        --publisher-email $myEmail  \
-       --resource-group myResourceGroup \
+       --resource-group myResourceGrouplodXXXXXXXX \
        --publisher-name Import-API-Exercise \
        --sku-name Consumption 
    ```
