@@ -1,207 +1,229 @@
----
-lab:
-    topic: Azure authentication and authorization
-    title: "Retrieve user profile information with the Microsoft Graph SDK"
-    description: "Learn how to retrieve user profile information from Microsoft Graph."
----
+1. # Microsoft Graph SDK を使用してユーザー プロファイル情報を取得する
 
-# Retrieve user profile information with the Microsoft Graph SDK
-
-In this exercise, you create a .NET app to authenticate with Microsoft Entra ID and request an access token, then call the Microsoft Graph API to retrieve and display your user profile information. You learn how to configure permissions and interact with Microsoft Graph from your application.
-
-Tasks performed in this exercise:
-
-* Register an application with the Microsoft identity platform
-* Create a .NET console application that implements interactive authentication, and uses the **GraphServiceClient** class to retrieve user profile information.
-
-This exercise takes approximately **15** minutes to complete.
-
-## Before you start
-
-To complete the exercise, you need:
-
-* An Azure subscription. If you don't already have one, you can [sign up for one](https://azure.microsoft.com/).
-
-* [Visual Studio Code](https://code.visualstudio.com/) on one of the [supported platforms](https://code.visualstudio.com/docs/supporting/requirements#_platforms).
-
-* [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) or greater.
-
-* [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) for Visual Studio Code.
-
-## Register a new application
-
-1. In your browser navigate to the Azure portal [https://portal.azure.com](https://portal.azure.com); signing in with your Azure credentials if prompted.
-
-1. In the portal, search for and select **App registrations**. 
-
-1. Select **+ New registration**, and when the **Register an application** page appears, enter your application's registration information:
-
-    | Field | Value |
-    |--|--|
-    | **Name** | Enter `myGraphApplication`  |
-    | **Supported account types** | Select **Accounts in this organizational directory only** |
-    | **Redirect URI (optional)** | Select **Public client/native (mobile & desktop)** and enter `http://localhost` in the box to the right. |
-
-1. Select **Register**. Microsoft Entra ID assigns a unique application (client) ID to your app, and you're taken to your application's **Overview** page. 
-
-1. In the **Essentials** section of the **Overview** page record the **Application (client) ID** and the **Directory (tenant) ID**. The information is needed for the application.
-
-    ![Screenshot showing the location of the fields to copy.](./media/01-app-directory-id-location.png)
- 
-## Create a .NET console app to send and receive messages
-
-Now that the needed resources are deployed to Azure the next step is to set up the console application. The following steps are performed in your local environment.
-
-1. Create a folder named **graphapp**, or a name of your choosing, for the project.
-
-1. Launch **Visual Studio Code** and select **File > Open folder...** and select the project folder.
-
-1. Select **View > Terminal** to open a terminal.
-
-1. Run the following command in the VS Code terminal to create the .NET console application.
-
-    ```
-    dotnet new console
-    ```
-
-1. Run the following commands to add the **Azure.Identity**,  **Microsoft.Graph**, and the **dotenv.net** packages to the project.
-
-    ```
-    dotnet add package Azure.Identity
-    dotnet add package Microsoft.Graph
-    dotnet add package dotenv.net
-    ```
-
-### Configure the console application
-
-In this section you create, and edit, a **.env** file to hold the secrets you recorded earlier. 
-
-1. Select **File > New file...** and create a file named *.env* in the project folder.
-
-1. Open the **.env** file and add the following code. Replace **YOUR_CLIENT_ID**, and **YOUR_TENANT_ID** with the values you recorded earlier.
-
-    ```
-    CLIENT_ID="YOUR_CLIENT_ID"
-    TENANT_ID="YOUR_TENANT_ID"
-    ```
-
-1. Press **ctrl+s** to save the file.
-
-### Add the starter code for the project
-
-1. Open the *Program.cs* file and replace any existing contents with the following code. Be sure to review the comments in the code.
-
-    ```csharp
-    using Microsoft.Graph;
-    using Azure.Identity;
-    using dotenv.net;
     
-    // Load environment variables from .env file (if present)
-    DotEnv.Load();
-    var envVars = DotEnv.Read();
+
+    この演習では、Microsoft Entra ID で認証し、アクセス トークンを要求する .NET アプリを作成し、Microsoft Graph API を呼び出してユーザー プロファイル情報を取得して表示します。アクセス許可を構成し、アプリケーションから Microsoft Graph と対話する方法について説明します。
+
+    この演習で実行されるタスク:
+
+    - Microsoft ID プラットフォームにアプリケーションを登録する
+    - 対話型認証を実装し、**GraphServiceClient** クラスを使用してユーザー プロファイル情報を取得する .NET コンソール アプリケーションを作成します。
+
+    この演習は完了するまでに約 **15** 分かかります。
+
+    ## 始める前に
+
     
-    // Read Azure AD app registration values from environment
-    string clientId = envVars["CLIENT_ID"];
-    string tenantId = envVars["TENANT_ID"];
+
+    演習を完了するには、次のものが必要です。
+
+    - Azure サブスクリプション。まだお持ちでない場合は、[サインアップ](https://azure.microsoft.com/)できます。
+    - [サポートされているプラットフォーム](https://code.visualstudio.com/docs/supporting/requirements#_platforms)の 1 つ上の [Visual Studio Code](https://code.visualstudio.com/)。
+    - [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) 以降。
+    - Visual Studio Code 用の [C# 開発キット](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)。
+
+    ## 新しいアプリケーションを登録する
+
     
-    // Validate that required environment variables are set
-    if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(tenantId))
-    {
-        Console.WriteLine("Please set CLIENT_ID and TENANT_ID environment variables.");
-        return;
-    }
+
+    1. ブラウザーで Azure portal [https://portal.azure.com](https://portal.azure.com/) に移動します。プロンプトが表示されたら、Azure 資格情報を使用してサインインします。
+
+    2. ポータルで、 [**アプリの登録]** を検索して選択します。
+
+    3. [**+ 新しい登録**] を選択し、[**アプリケーションの登録]** ページが表示されたら、アプリケーションの登録情報を入力します。
+
+       | 畑                                     | 価値                                                         |
+       | -------------------------------------- | ------------------------------------------------------------ |
+       | **名前**                               | 入る`myGraphApplication`                                     |
+       | **サポートされているアカウントの種類** | **[この組織ディレクトリ内のアカウントのみ**] を選択します。  |
+       | **リダイレクト URI (オプション)**      | [**パブリック クライアント/ネイティブ (モバイルとデスクトップ)]** を選択し、右側のボックスに入力します。`http://localhost` |
+
+    4. [**登録]** を選択します。Microsoft Entra ID によって一意のアプリケーション (クライアント) ID がアプリに割り当てられ、アプリケーションの [**概要**] ページが表示されます。
+
+    5. [**概要**] ページの **[Essentials**] セクションに、**アプリケーション (クライアント) ID** と**ディレクトリ (テナント) ID** を記録します。この情報は、アプリケーションに必要です。
+
+       ![](./media/01-app-directory-id-location.png)
+
+    ## メッセージを送受信するための .NET コンソール アプリを作成する
+
     
-    // ADD CODE TO DEFINE SCOPE AND CONFIGURE AUTHENTICATION
+
+    必要なリソースが Azure にデプロイされたので、次の手順はコンソール アプリケーションを設定することです。次の手順は、ローカル環境で実行されます。
+
+    1. プロジェクト用に **graphapp** という名前のフォルダー、または任意の名前を作成します。
+
+    2. **Visual Studio Code** を起動し、[**ファイル] > [フォルダーを開く...]** を選択し、プロジェクト フォルダーを選択します。
+
+    3. ターミナル**>表示** を選択してターミナルを開きます。
+
+    4. VS Code ターミナルで次のコマンドを実行して、.NET コンソール アプリケーションを作成します。
+
+       ```
+       dotnet new console
+       ```
+
+       
+
+    5. 次のコマンドを実行して、**Azure.Identity**、**Microsoft.Graph**、**および dotenv.net** パッケージをプロジェクトに追加します。
+
+       ```
+       dotnet add package Azure.Identity
+       dotnet add package Microsoft.Graph
+       dotnet add package dotenv.net
+       ```
+
+       
+
+    ### コンソール アプリケーションの構成
+
     
+
+    このセクションでは、前に記録したシークレットを保持する **.env** ファイルを作成および編集します。
+
+    1. **[ファイル] > [新しいファイル...]** を選択し、プロジェクト フォルダーに *.env* という名前のファイルを作成します。
+
+    2. **.env** ファイルを開き、次のコードを追加します。**YOUR_CLIENT_ID**を置き換え、**YOUR_TENANT_ID**前に記録した値に置き換えます。
+
+       ```
+       CLIENT_ID="YOUR_CLIENT_ID"
+       TENANT_ID="YOUR_TENANT_ID"
+       ```
+
+       
+
+    3. **ctrl+s** を押してファイルを保存します。
+
+    ### プロジェクトのスターターコードを追加する
+
     
+
+    1. *Program.cs* ファイルを開き、既存のコンテンツを次のコードに置き換えます。コード内のコメントを必ず確認してください。
+
+       ```
+       using Microsoft.Graph;
+       using Azure.Identity;
+       using dotenv.net;
+       
+       // Load environment variables from .env file (if present)
+       DotEnv.Load();
+       var envVars = DotEnv.Read();
+       
+       // Read Azure AD app registration values from environment
+       string clientId = envVars["CLIENT_ID"];
+       string tenantId = envVars["TENANT_ID"];
+       
+       // Validate that required environment variables are set
+       if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(tenantId))
+       {
+           Console.WriteLine("Please set CLIENT_ID and TENANT_ID environment variables.");
+           return;
+       }
+       
+       // ADD CODE TO DEFINE SCOPE AND CONFIGURE AUTHENTICATION
+       
+       
+       
+       // ADD CODE TO CREATE GRAPH CLIENT AND RETRIEVE USER PROFILE
+       ```
+
+       
+
+    2. **ctrl+s** を押して変更を保存します。
+
+    ### アプリケーションを完成させるためのコードを追加します
+
     
-    // ADD CODE TO CREATE GRAPH CLIENT AND RETRIEVE USER PROFILE
+
+    1. **「ADD CODE TO DEFINE SCOPE AND CONFIGURE AUTHENTICATION」**コメントを見つけて、コメントの直後に次のコードを追加します。コード内のコメントを必ず確認してください。
+
+       ```
+       // Define the Microsoft Graph permission scopes required by this app
+       var scopes = new[] { "User.Read" };
+       
+       // Configure interactive browser authentication for the user
+       var options = new InteractiveBrowserCredentialOptions
+       {
+           ClientId = clientId, // Azure AD app client ID
+           TenantId = tenantId, // Azure AD tenant ID
+           RedirectUri = new Uri("http://localhost") // Redirect URI for auth flow
+       };
+       var credential = new InteractiveBrowserCredential(options);
+       ```
+
+       
+
+    2. **ADD CODE TO CREATE GRAPH CLIENT と RETRIEVE USER PROFILE** コメントを見つけて、コメントの直後に次のコードを追加します。コード内のコメントを必ず確認してください。
+
+       ```
+       // Create a Microsoft Graph client using the credential
+       var graphClient = new GraphServiceClient(credential);
+       
+       // Retrieve and display the user's profile information
+       Console.WriteLine("Retrieving user profile...");
+       await GetUserProfile(graphClient);
+       
+       // Function to get and print the signed-in user's profile
+       async Task GetUserProfile(GraphServiceClient graphClient)
+       {
+           try
+           {
+               // Call Microsoft Graph /me endpoint to get user info
+               var me = await graphClient.Me.GetAsync();
+               Console.WriteLine($"Display Name: {me?.DisplayName}");
+               Console.WriteLine($"Principal Name: {me?.UserPrincipalName}");
+               Console.WriteLine($"User Id: {me?.Id}");
+           }
+           catch (Exception ex)
+           {
+               // Print any errors encountered during the call
+               Console.WriteLine($"Error retrieving profile: {ex.Message}");
+           }
+       }
+       ```
+
+       
+
+    3. **ctrl+s** を押してファイルを保存します。
+
+    ## アプリケーションを実行する
+
     
-    
-    ```
 
-1. Press **ctrl+s** to save your changes.
+    アプリが完成したので、次は実行します。
 
-### Add code to complete the application
+    1. 次のコマンドを実行して、アプリケーションを起動します。
 
-1. Locate the **// ADD CODE TO DEFINE SCOPE AND CONFIGURE AUTHENTICATION** comment and add the following code directly after the comment. Be sure to review the comments in the code.
+       ```
+       dotnet run
+       ```
 
-    ```csharp
-    // Define the Microsoft Graph permission scopes required by this app
-    var scopes = new[] { "User.Read" };
-    
-    // Configure interactive browser authentication for the user
-    var options = new InteractiveBrowserCredentialOptions
-    {
-        ClientId = clientId, // Azure AD app client ID
-        TenantId = tenantId, // Azure AD tenant ID
-        RedirectUri = new Uri("http://localhost") // Redirect URI for auth flow
-    };
-    var credential = new InteractiveBrowserCredential(options);
-    ```
+       
 
-1. Locate the **// ADD CODE TO CREATE GRAPH CLIENT AND RETRIEVE USER PROFILE** comment and add the following code directly after the comment. Be sure to review the comments in the code.
+    2. アプリがデフォルトのブラウザーを開き、認証に使用するアカウントを選択するように求めます。複数のアカウントが一覧表示されている場合は、アプリで使用されているテナントに関連付けられているアカウントを選択します。
 
-    ```csharp
-    // Create a Microsoft Graph client using the credential
-    var graphClient = new GraphServiceClient(credential);
-    
-    // Retrieve and display the user's profile information
-    Console.WriteLine("Retrieving user profile...");
-    await GetUserProfile(graphClient);
-    
-    // Function to get and print the signed-in user's profile
-    async Task GetUserProfile(GraphServiceClient graphClient)
-    {
-        try
-        {
-            // Call Microsoft Graph /me endpoint to get user info
-            var me = await graphClient.Me.GetAsync();
-            Console.WriteLine($"Display Name: {me?.DisplayName}");
-            Console.WriteLine($"Principal Name: {me?.UserPrincipalName}");
-            Console.WriteLine($"User Id: {me?.Id}");
-        }
-        catch (Exception ex)
-        {
-            // Print any errors encountered during the call
-            Console.WriteLine($"Error retrieving profile: {ex.Message}");
-        }
-    }
-    ```
+    3. 登録済みアプリに対して初めて認証する場合は、サインインしてプロファイルを読み取るためのアプリの承認、およびアクセス権を付与したデータへのアクセスを維持するように求める [**アクセス許可要求]** 通知が届きます。**[同意する]** を選択します。
 
-1. Press **ctrl+s** to save the file.
+       ![](C:\Users\z2115023\Documents\GitHub\az-204-lab\media\01-granting-permission.png)
 
-## Run the application
+    4. コンソールに次の例のような結果が表示されます。
 
-Now that the app is complete it's time to run it. 
+       ```
+       Retrieving user profile...
+       Display Name: <Your account display name>
+       Principal Name: <Your principal name>
+       User Id: 9f5...
+       ```
 
-1. Start the application by running the following command:
+       
 
-    ```
-    dotnet run
-    ```
+    5. アプリケーションを 2 回起動すると、「**アクセス許可が要求されました」**という通知が届かなくなったことに気づきます。以前に付与した権限がキャッシュされました。
 
-1. The app opens the default browser prompting you to select the account you want to authenticate with. If there are multiple accounts listed select the one associated with the tenant used in the app.
+## リソースをクリーンアップする
 
-1. If this is the first time you've authenticated to the registered app you receive a **Permissions requested** notification asking you to approve the app to sign you in and read your profile, and maintain access to data you have given it access to. Select **Accept**.
 
-    ![Screenshot showing the permissions requested notification](./media/01-granting-permission.png)
 
-1. You should see the results similar to the example below in the console.
+演習が終わったので、先ほど作成したアプリ登録を削除する必要があります。
 
-    ```
-    Retrieving user profile...
-    Display Name: <Your account display name>
-    Principal Name: <Your principal name>
-    User Id: 9f5...
-    ```
+1. Azure portal で、作成したアプリ登録に移動します。
+2. ツール バーで、**削除 を選択します**。
 
-1. Start the application a second time and notice you no longer receive the **Permissions requested** notification. The permission you granted earlier was cached.
-
-## Clean up resources
-
-Now that you finished the exercise, you should delete the app registration you created earlier.
-
-1. In the Azure portal, navigate to the app registration you created.
-1. On the toolbar, select **Delete**.
-1. Confirm the deletion.
