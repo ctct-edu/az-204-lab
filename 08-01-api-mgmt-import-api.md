@@ -66,18 +66,18 @@
 
    [![Screenshot of the APIs section of the navigation pane.](https://github.com/MicrosoftLearning/mslearn-azure-developer/raw/main/instructions/azure-api-mgmt/media/select-apis-navigation-pane.png)](https://github.com/MicrosoftLearning/mslearn-azure-developer/blob/main/instructions/azure-api-mgmt/media/select-apis-navigation-pane.png)
 
-4. [**定義から作成]** セクションで **[OpenAPI**] を選択し、表示されるポップアップで **[基本/完全]** トグルを **[完全]** に設定します。
+4. **[Create from definition]** セクションで **[OpenAPI**] を選択し、表示されるポップアップで **[Basic/Full]** トグルを **[Full]** に設定します。
 
    [![Screenshot of the OpenAPI dialog box. Fields are detailed in the following table.](https://github.com/MicrosoftLearning/mslearn-azure-developer/raw/main/instructions/azure-api-mgmt/media/create-api.png)](https://github.com/MicrosoftLearning/mslearn-azure-developer/blob/main/instructions/azure-api-mgmt/media/create-api.png)
 
    次の表の値を使用してフォームに入力します。記載されていないフィールドはデフォルト値のままにしておくことができます。
 
-   | 設定             | 価値                                       | 形容                                                         |
+   | 設定             | 値                                         | 説明                                                         |
    | ---------------- | ------------------------------------------ | ------------------------------------------------------------ |
    | **OpenAPI 仕様** | `https://bigconference.azurewebsites.net/` | API を実装するサービスを参照し、リクエストはこのアドレスに転送されます。フォーム内の必要な情報のほとんどは、この値を入力すると自動的に入力されます。 |
    | **URL スキーム** | [**HTTPS]** を選択します。                 | API によって受け入れられる HTTP プロトコルのセキュリティ レベルを定義します。 |
 
-5. **[作成]** を選択します。
+5. **[Create]** を選択します。
 
 
 
@@ -87,10 +87,10 @@
 
 *Big Conference API* が作成されます。次に、API 設定を構成します。
 
-1. メニューで**[設定**]を選択します。
-2. **[Web サービス URL**] フィールドに入力します。`https://bigconference.azurewebsites.net/`
-3. [**サブスクリプションが必要]** チェックボックスの選択を解除します。
-4. [**保存]** を選択します。
+1. メニューで **[Settings]** を選択します。
+2. **[Web Service URL]** フィールドに以下の通り入力します。`https://bigconference.azurewebsites.net/`
+3. **[Subscription required]** チェックボックスをオフにします。
+4. **[Save]** を選択します。
 
 
 
@@ -100,7 +100,7 @@
 
 API がインポートされ、構成されたので、API をテストします。
 
-1. メニュー バーの [**テスト**] を選択します。これにより、API で使用可能なすべての操作が表示されます。
+1. 上の **[Test]** タブを選択します。これにより、API で使用可能なすべての操作が表示されます。
 
 2. **Speakers_Get**操作を検索して選択します。
 
