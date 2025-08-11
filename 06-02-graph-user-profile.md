@@ -140,7 +140,7 @@
 
 
 
-1. **「ADD CODE TO DEFINE SCOPE AND CONFIGURE AUTHENTICATION」**コメントを見つけて、コメントの直後に次のコードを追加します。コード内のコメントを必ず確認してください。
+1. **「ADD CODE TO DEFINE SCOPE AND CONFIGURE AUTHENTICATION」** コメントを見つけて、コメントの直後に次のコードを追加します。コード内のコメントを必ず確認してください。
 
    ```
    // Define the Microsoft Graph permission scopes required by this app
