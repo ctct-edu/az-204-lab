@@ -1,289 +1,337 @@
----
-lab:
-    topic: Azure events and messaging
-    title: 'Send and receive messages from Azure Queue storage'
-    description: 'Learn how send and messages from Azure Queue storage with the with the .NET Azure.StorageQueues SDK.'
----
+# Azure Queue Storage からのメッセージの送受信
 
-# Send and receive messages from Azure Queue storage
 
-In this exercise, you create and configure Azure Queue Storage resources, then build a .NET app to send and receive messages using the **Azure.Storage.Queues** SDK. You learn how to provision storage resources, manage queue messages, and clean up your environment when finished. 
 
-Tasks performed in this exercise:
+この演習では、Azure Queue Storage リソースを作成して構成し、**Azure.Storage.Queues** SDK を使用してメッセージを送受信する .NET アプリを構築します。ストレージ リソースのプロビジョニング、キュー メッセージの管理、および完了後の環境のクリーンアップの方法を学習します。
 
-* Create Azure Queue storage resources
-* Assign a role to your Microsoft Entra user name
-* Create a .NET console app to send and receive messages
-* Clean up resources
+この演習で実行されるタスク:
 
-This exercise takes approximately **30** minutes to complete.
+- Azure Queue Storage リソースを作成する
+- Microsoft Entra ユーザー名にロールを割り当てる
+- メッセージを送受信するための .NET コンソール アプリを作成する
+- リソースをクリーンアップする
 
-## Create Azure Queue storage resources
+この演習は完了するまでに約**30**分かかります。
 
-In this section of the exercise you create the needed resources in Azure with the Azure CLI.
+## Azure Queue Storage リソースを作成する
 
-1. In your browser navigate to the Azure portal [https://portal.azure.com](https://portal.azure.com); signing in with your Azure credentials if prompted.
 
-1. Use the **[\>_]** button to the right of the search bar at the top of the page to create a new cloud shell in the Azure portal, selecting a ***Bash*** environment. The cloud shell provides a command line interface in a pane at the bottom of the Azure portal.
 
-    > **Note**: If you have previously created a cloud shell that uses a *PowerShell* environment, switch it to ***Bash***.
+演習のこのセクションでは、Azure CLI を使用して Azure に必要なリソースを作成します。
 
-1. In the cloud shell toolbar, in the **Settings** menu, select **Go to Classic version** (this is required to use the code editor).
+1. ブラウザーで Azure portal [https://portal.azure.com](https://portal.azure.com/) に移動します。プロンプトが表示されたら、Azure 資格情報を使用してサインインします。
 
-1. Create a resource group for the resources needed for this exercise. If you already have a resource group you want to use, proceed to the next step. Replace **myResourceGroup** with a name you want to use for the resource group. You can replace **eastus** with a region near you if needed.
+2. ページ上部の検索バーの右側にある **[>_]** ボタンを使用して、Azure portal で新しいクラウド シェルを作成し、***Bash*** 環境を選択します。「作業の開始」ウィンドウが表示された場合、以下のように操作します。
 
-    ```
-    az group create --name myResourceGroup --location eastus
-    ```
+   ・「ストレージアカウントは不要です」を選択
 
-1. Many of the commands require unique names and use the same parameters. Creating some variables will reduce the changes needed to the commands that create resources. Run the following commands to create the needed variables. Replace **myResourceGroup** with the name you're using for this exercise. If you changed the location in the previous step, make the same change in the **location** variable.
+   ・「サブスクリプション」をドロップダウンにて選択し「適用をクリック」
 
-    ```
-    resourceGroup=myResourceGroup
-    location=eastus
-    storAcctName=storactname$RANDOM
-    ```
+   クラウド シェルは、Azure portal の下部にあるウィンドウにコマンド ライン インターフェイスを提供します。
 
-1. You will need the name assigned to the storage account later in this exercise. Run the following command and record output.
+3. クラウド シェル ツール バーの [**設定**] メニューで、[**クラシック バージョンに移動**] を選択します (これはコード エディターを使用するために必要です)。
 
-    ```
-    echo $storAcctName
-    ```
+5. コマンドの多くは一意の名前を必要とし、同じパラメータを使用します。いくつかの変数を作成すると、リソースを作成するコマンドに必要な変更が減ります。次のコマンドを実行して、必要な変数を作成します。**myResourceGrouplodXXXXXXXX** を、この演習で使用している名前に置き換えます。前の手順で場所を変更した場合は、**場所**変数で同じ変更を行います。
 
-1. Run the following command to create a storage account using the variable you created earlier. The operation takes a few minutes to complete.
+   ```
+   resourceGroup=myResourceGrouplodXXXXXXXX
+   location=eastus
+   storAcctName=storactnameXXXXXXXX
+   ```
 
-    ```bash
-    az storage account create --resource-group $resourceGroup \
-        --name $storAcctName --location $location --sku Standard_LRS
-    ```
+   
 
-### Assign a role to your Microsoft Entra user name
+6. この演習の後半で、ストレージ アカウントに割り当てられた名前が必要です。次のコマンドを実行し、出力を記録します。
 
-To allow your app to send and receive messages, assign your Microsoft Entra user to the **Storage Queue Data Contributor** role. This gives your user account permission to create queues, and send/receive messages using Azure RBAC. Perform the following steps in the cloud shell.
+   ```
+   echo $storAcctName
+   ```
 
-1. Run the following command to retrieve the **userPrincipalName** from your account. This represents who the role will be assigned to.
+   
 
-    ```
-    userPrincipal=$(az rest --method GET --url https://graph.microsoft.com/v1.0/me \
-        --headers 'Content-Type=application/json' \
-        --query userPrincipalName --output tsv)
-    ```
+7. 次のコマンドを実行して、前に作成した変数を使用してストレージ アカウントを作成します。操作が完了するまでに数分かかります。
 
-1. Run the following command to retrieve the resource ID of the storage account. The resource ID sets the scope for the role assignment to a specific namespace.
+   ```
+   az storage account create --resource-group $resourceGroup \
+       --name $storAcctName --location $location --sku Standard_LRS
+   ```
 
-    ```
-    resourceID=$(az storage account show --resource-group $resourceGroup \
-        --name $storAcctName --query id --output tsv)
-    ```
+   
 
-1. Run the following command to create and assign the **Storage Queue Data Contributor** role.
+### Microsoft Entra ユーザー名にロールを割り当てる
 
-    ```
-    az role assignment create --assignee $userPrincipal \
-        --role "Storage Queue Data Contributor" \
-        --scope $resourceID
-    ```
 
-## Create a .NET console app to send and receive messages
 
-Now that the needed resources are deployed to Azure the next step is to set up the console application. The following steps are performed in the cloud shell.
+アプリでメッセージを送受信できるようにするには、Microsoft Entra ユーザーを**ストレージ キュー データ共同作成者**ロールに割り当てます。これにより、ユーザー アカウントに、キューを作成し、Azure RBAC を使用してメッセージを送受信するアクセス許可が与えられます。クラウドシェルで次の手順を実行します。
 
->**Tip:** Resize the cloud shell to display more information, and code, by dragging the top border. You can also use the minimize and maximize buttons to switch between the cloud shell and the main portal interface.
+1. 次のコマンドを実行して、アカウントから **userPrincipalName** を取得します。これは、ロールが割り当てられるユーザーを表します。
 
-1. Run the following commands to create a directory to contain the project and change into the project directory.
+   ```
+   userPrincipal=$(az rest --method GET --url https://graph.microsoft.com/v1.0/me \
+       --headers 'Content-Type=application/json' \
+       --query userPrincipalName --output tsv)
+   ```
 
-    ```
-    mkdir queuestor
-    cd queuestor
-    ```
+   
 
-1. Create the .NET console application.
+2. 次のコマンドを実行して、ストレージ アカウントのリソース ID を取得します。リソース ID は、ロール割り当てのスコープを特定の名前空間に設定します。
 
-    ```
-    dotnet new console
-    ```
-
-1. Run the following commands to add the **Azure.Storage.Queues** and **Azure.Identity** packages to the project.
-
-    ```
-    dotnet add package Azure.Storage.Queues
-    dotnet add package Azure.Identity
-    ```
-
-### Add the starter code for the project
-
-1. Run the following command in the cloud shell to begin editing the application.
-
-    ```
-    code Program.cs
-    ```
-
-1. Replace any existing contents with the following code. Be sure to review the comments in the code, and replace **<YOUR-STORAGE-ACCT-NAME>** with the storage account name you recorded earlier.
-
-    ```csharp
-    using Azure;
-    using Azure.Identity;
-    using Azure.Storage.Queues;
-    using Azure.Storage.Queues.Models;
-    using System;
-    using System.Threading.Tasks;
-    
-    // Create a unique name for the queue
-    // TODO: Replace the <YOUR-STORAGE-ACCT-NAME> placeholder 
-    string queueName = "myqueue-" + Guid.NewGuid().ToString();
-    string storageAccountName = "<YOUR-STORAGE-ACCT-NAME>";
-    
-    // ADD CODE TO CREATE A QUEUE CLIENT AND CREATE A QUEUE
-    
-    
-    
-    // ADD CODE TO SEND AND LIST MESSAGES
-    
-    
-    
-    // ADD CODE TO UPDATE A MESSAGE AND LIST MESSAGES
-    
-    
-    
-    // ADD CODE TO DELETE MESSAGES AND THE QUEUE
-    
-    
-    ```
-
-1. Press **ctrl+s** to save your changes.
-
-### Add code to create a queue client and create a queue
-
-Now it's time to add code to create the queue storage client and create a queue.
-
-1. Locate the **// ADD CODE TO CREATE A QUEUE CLIENT AND CREATE A QUEUE** comment and add the following code directly after the comment. Be sure to review the code and comments.
-
-    ```csharp
-    // Create a DefaultAzureCredentialOptions object to exclude certain credentials
-    DefaultAzureCredentialOptions options = new()
-    {
-        ExcludeEnvironmentCredential = true,
-        ExcludeManagedIdentityCredential = true
-    };
-    
-    // Instantiate a QueueClient to create and interact with the queue
-    QueueClient queueClient = new QueueClient(
-        new Uri($"https://{storageAccountName}.queue.core.windows.net/{queueName}"),
-        new DefaultAzureCredential(options));
-    
-    Console.WriteLine($"Creating queue: {queueName}");
-    
-    // Create the queue
-    await queueClient.CreateAsync();
-    
-    Console.WriteLine("Queue created, press Enter to add messages to the queue...");
-    Console.ReadLine();
-    ```
-
-1. Press **ctrl+s** to save the file, then continue with the exercise.
-
-### Add code to send and list messages in a queue
-
-1. Locate the **// ADD CODE TO SEND AND LIST MESSAGES** comment and add the following code directly after the comment. Be sure to review the code and comments.
-
-    ```csharp
-    // Send several messages to the queue with the SendMessageAsync method.
-    await queueClient.SendMessageAsync("Message 1");
-    await queueClient.SendMessageAsync("Message 2");
-    
-    // Send a message and save the receipt for later use
-    SendReceipt receipt = await queueClient.SendMessageAsync("Message 3");
-    
-    Console.WriteLine("Messages added to the queue. Press Enter to peek at the messages...");
-    Console.ReadLine();
-    
-    // Peeking messages lets you view the messages without removing them from the queue.
-    
-    foreach (var message in (await queueClient.PeekMessagesAsync(maxMessages: 10)).Value)
-    {
-        Console.WriteLine($"Message: {message.MessageText}");
-    }
-    
-    Console.WriteLine("\nPress Enter to update a message in the queue...");
-    Console.ReadLine();
-    ```
-
-1. Press **ctrl+s** to save the file, then continue with the exercise.
-
-### Add code to update a message and list the results
-
-1. Locate the **// ADD CODE TO UPDATE A MESSAGE AND LIST MESSAGES** comment and add the following code directly after the comment. Be sure to review the code and comments.
-
-    ```csharp
-    // Update a message with the UpdateMessageAsync method and the saved receipt
-    await queueClient.UpdateMessageAsync(receipt.MessageId, receipt.PopReceipt, "Message 3 has been updated");
-    
-    Console.WriteLine("Message three updated. Press Enter to peek at the messages again...");
-    Console.ReadLine();
-    
-    
-    // Peek messages from the queue to compare updated content
-    foreach (var message in (await queueClient.PeekMessagesAsync(maxMessages: 10)).Value)
-    {
-        Console.WriteLine($"Message: {message.MessageText}");
-    }
-    
-    Console.WriteLine("\nPress Enter to delete messages from the queue...");
-    Console.ReadLine();
-    ```
-
-1. Press **ctrl+s** to save the file, then continue with the exercise.
-
-### Add code to delete messages and the queue
-
-1. Locate the **// ADD CODE TO DELETE MESSAGES AND THE QUEUE** comment and add the following code directly after the comment. Be sure to review the code and comments.
-
-    ```csharp
-    // Delete messages from the queue with the DeleteMessagesAsync method.
-    foreach (var message in (await queueClient.ReceiveMessagesAsync(maxMessages: 10)).Value)
-    {
-        // "Process" the message
-        Console.WriteLine($"Deleting message: {message.MessageText}");
-    
-        // Let the service know we're finished with the message and it can be safely deleted.
-        await queueClient.DeleteMessageAsync(message.MessageId, message.PopReceipt);
-    }
-    Console.WriteLine("Messages deleted from the queue.");
-    Console.WriteLine("\nPress Enter key to delete the queue...");
-    Console.ReadLine();
-    
-    // Delete the queue with the DeleteAsync method.
-    Console.WriteLine($"Deleting queue: {queueClient.Name}");
-    await queueClient.DeleteAsync();
-    
-    Console.WriteLine("Done");
-    ```
-
-1. Press **ctrl+s** to save the file, then **ctrl+q** to exit the editor.
-
-## Sign into Azure and run the app
-
-1. In the cloud shell command-line pane, enter the following command to sign into Azure.
-
-    ```
-    az login
-    ```
-
-    **<font color="red">You must sign into Azure - even though the cloud shell session is already authenticated.</font>**
-
-    > **Note**: In most scenarios, just using *az login* will be sufficient. However, if you have subscriptions in multiple tenants, you may need to specify the tenant by using the *--tenant* parameter. See [Sign into Azure interactively using Azure CLI](https://learn.microsoft.com/cli/azure/authenticate-azure-cli-interactively) for details.
-
-1. Run the following command to start the console app. The app will pause many times during execution waiting for you to press any key to continue. This gives you an opportunity to view the messages in the Azure portal.
-
-    ```
-    dotnet run
-    ```
-
-1. In the Azure portal, navigate to the Azure Storage account you created. 
-
-1. Expand **> Data storage** in the left navigation and select **Queues**.
-
-1. Select the queue the application creates and you can view the sent messages and monitor what the application is doing.
+   ```
+   resourceID=$(az storage account show --resource-group $resourceGroup \
+       --name $storAcctName --query id --output tsv)
+   ```
+
+   
+
+3. 次のコマンドを実行して、**ストレージ キュー データ共同作成者**ロールを作成して割り当てます。
+
+   ```
+   az role assignment create --assignee $userPrincipal \
+       --role "Storage Queue Data Contributor" \
+       --scope $resourceID
+   ```
+
+   
+
+## メッセージを送受信するための .NET コンソール アプリを作成する
+
+
+
+必要なリソースが Azure にデプロイされたので、次の手順はコンソール アプリケーションを設定することです。次の手順は、クラウドシェルで実行されます。
+
+> **先端：**クラウドシェルのサイズを変更して、上部の境界線をドラッグして、より多くの情報とコードを表示します。[最小化] ボタンと [最大化] ボタンを使用して、クラウド シェルとメイン ポータル インターフェイスを切り替えることもできます。
+
+1. 次のコマンドを実行して、プロジェクトを含むディレクトリを作成し、プロジェクト ディレクトリに変更します。
+
+   ```
+   mkdir queuestor
+   cd queuestor
+   ```
+
+   
+
+2. .NET コンソール アプリケーションを作成します。
+
+   ```
+   dotnet new console
+   ```
+
+   
+
+3. 次のコマンドを実行して、**Azure.Storage.Queues** パッケージと **Azure.Identity** パッケージをプロジェクトに追加します。
+
+   ```
+   dotnet add package Azure.Storage.Queues
+   dotnet add package Azure.Identity
+   ```
+
+   
+
+### プロジェクトのスターターコードを追加する
+
+
+
+1. クラウドシェルで次のコマンドを実行して、アプリケーションの編集を開始します。
+
+   ```
+   code Program.cs
+   ```
+
+   
+
+2. 既存のコンテンツを次のコードに置き換えます。コード内のコメントを確認し、前に記録したストレージ アカウント名に置き換えてください。
+
+   ```
+   using Azure;
+   using Azure.Identity;
+   using Azure.Storage.Queues;
+   using Azure.Storage.Queues.Models;
+   using System;
+   using System.Threading.Tasks;
+   
+   // Create a unique name for the queue
+   // TODO: Replace the <YOUR-STORAGE-ACCT-NAME> placeholder 
+   string queueName = "myqueue-" + Guid.NewGuid().ToString();
+   string storageAccountName = "<YOUR-STORAGE-ACCT-NAME>";
+   
+   // ADD CODE TO CREATE A QUEUE CLIENT AND CREATE A QUEUE
+   
+   
+   
+   // ADD CODE TO SEND AND LIST MESSAGES
+   
+   
+   
+   // ADD CODE TO UPDATE A MESSAGE AND LIST MESSAGES
+   
+   
+   
+   // ADD CODE TO DELETE MESSAGES AND THE QUEUE
+   ```
+
+   
+
+3. **ctrl+s** を押して変更を保存します。
+
+### キュー クライアントを作成し、キューを作成するコードを追加します
+
+
+
+次に、キュー ストレージ クライアントを作成し、キューを作成するコードを追加します。
+
+1. **ADD CODE TO CREATE A QUEUE CLIENT と CREATE A QUEUE** コメントを見つけて、コメントの直後に次のコードを追加します。コードとコメントを必ず確認してください。
+
+   ```
+   // Create a DefaultAzureCredentialOptions object to exclude certain credentials
+   DefaultAzureCredentialOptions options = new()
+   {
+       ExcludeEnvironmentCredential = true,
+       ExcludeManagedIdentityCredential = true
+   };
+   
+   // Instantiate a QueueClient to create and interact with the queue
+   QueueClient queueClient = new QueueClient(
+       new Uri($"https://{storageAccountName}.queue.core.windows.net/{queueName}"),
+       new DefaultAzureCredential(options));
+   
+   Console.WriteLine($"Creating queue: {queueName}");
+   
+   // Create the queue
+   await queueClient.CreateAsync();
+   
+   Console.WriteLine("Queue created, press Enter to add messages to the queue...");
+   Console.ReadLine();
+   ```
+
+   
+
+2. **ctrl+s** キーを押してファイルを保存し、演習を続行します。
+
+### キュー内のメッセージを送信および一覧表示するコードを追加する
+
+
+
+1. **ADD CODE TO SEND AND LIST MESSAGES** コメントを見つけて、コメントの直後に次のコードを追加します。コードとコメントを必ず確認してください。
+
+   ```
+   // Send several messages to the queue with the SendMessageAsync method.
+   await queueClient.SendMessageAsync("Message 1");
+   await queueClient.SendMessageAsync("Message 2");
+   
+   // Send a message and save the receipt for later use
+   SendReceipt receipt = await queueClient.SendMessageAsync("Message 3");
+   
+   Console.WriteLine("Messages added to the queue. Press Enter to peek at the messages...");
+   Console.ReadLine();
+   
+   // Peeking messages lets you view the messages without removing them from the queue.
+   
+   foreach (var message in (await queueClient.PeekMessagesAsync(maxMessages: 10)).Value)
+   {
+       Console.WriteLine($"Message: {message.MessageText}");
+   }
+   
+   Console.WriteLine("\nPress Enter to update a message in the queue...");
+   Console.ReadLine();
+   ```
+
+   
+
+2. **ctrl+s** キーを押してファイルを保存し、演習を続行します。
+
+### メッセージを更新し、結果を一覧表示するコードを追加する
+
+
+
+1. **ADD CODE TO UPDATE A MESSAGE AND LIST MESSAGES** コメントを見つけて、コメントの直後に次のコードを追加します。コードとコメントを必ず確認してください。
+
+   ```
+   // Update a message with the UpdateMessageAsync method and the saved receipt
+   await queueClient.UpdateMessageAsync(receipt.MessageId, receipt.PopReceipt, "Message 3 has been updated");
+   
+   Console.WriteLine("Message three updated. Press Enter to peek at the messages again...");
+   Console.ReadLine();
+   
+   
+   // Peek messages from the queue to compare updated content
+   foreach (var message in (await queueClient.PeekMessagesAsync(maxMessages: 10)).Value)
+   {
+       Console.WriteLine($"Message: {message.MessageText}");
+   }
+   
+   Console.WriteLine("\nPress Enter to delete messages from the queue...");
+   Console.ReadLine();
+   ```
+
+   
+
+2. **ctrl+s** キーを押してファイルを保存し、演習を続行します。
+
+### メッセージとキューを削除するコードを追加する
+
+
+
+1. **ADD CODE TO DELETE MESSAGES と THE QUEUE** コメントを見つけて、コメントの直後に次のコードを追加します。コードとコメントを必ず確認してください。
+
+   ```
+   // Delete messages from the queue with the DeleteMessagesAsync method.
+   foreach (var message in (await queueClient.ReceiveMessagesAsync(maxMessages: 10)).Value)
+   {
+       // "Process" the message
+       Console.WriteLine($"Deleting message: {message.MessageText}");
+   
+       // Let the service know we're finished with the message and it can be safely deleted.
+       await queueClient.DeleteMessageAsync(message.MessageId, message.PopReceipt);
+   }
+   Console.WriteLine("Messages deleted from the queue.");
+   Console.WriteLine("\nPress Enter key to delete the queue...");
+   Console.ReadLine();
+   
+   // Delete the queue with the DeleteAsync method.
+   Console.WriteLine($"Deleting queue: {queueClient.Name}");
+   await queueClient.DeleteAsync();
+   
+   Console.WriteLine("Done");
+   ```
+
+   
+
+2. **ctrl+s を押して**ファイルを保存し、**次に ctrl+q** を押してエディターを終了します。
+
+## Azure にサインインしてアプリを実行する
+
+
+
+1. クラウド シェルのコマンド ライン ウィンドウで、次のコマンドを入力して Azure にサインインします。
+
+   ```
+   az login
+   ```
+
+   
+
+   **クラウド シェル セッションが既に認証されている場合でも、Azure にサインインする必要があります。** 具体的には下記のメッセージが表示されたら、https:// ～ devicelogin のリンクをクリックし、「コード(毎回変わる)」を入力した後、portalのサインインで使用したアカウントを選択し、「続行」をクリックします。
+
+   Cloud Shell is automatically authenticated under the initial account signed-in with. Run 'az login' only if you need to use a different account
+   To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code 「コード(毎回変わる)」 to authenticate.
+
+   > **注**: ほとんどのシナリオでは、*az login* を使用するだけで十分です。ただし、複数のテナントにサブスクリプションがある場合は、*--tenant* パラメーターを使用してテナントを指定する必要がある場合があります。詳細については、「[Azure CLI を使用して対話形式で Azure にサインインする」](https://learn.microsoft.com/cli/azure/authenticate-azure-cli-interactively)を参照してください。
+
+2. Select a subscription and tenant (Type a number or Enter for no changes)　は何も入力せずEnterを押してください。
+
+3. 次のコマンドを実行して、コンソール アプリを起動します。アプリは実行中に何度も一時停止し、任意のキーを押して続行するのを待ちます。これにより、Azure portal でメッセージを表示する機会が得られます。
+
+   ```
+   dotnet run
+   ```
+
+   
+
+4. Azure portal で、作成した Azure Storage アカウントに移動します。
+
+5. 左側>ナビゲーションで [**データ ストレージ**] を展開し、[**キュー]** を選択します。
+
+6. アプリケーションが作成するキューを選択すると、送信されたメッセージを表示し、アプリケーションの動作を監視できます。
 
 ## Clean up resources
 
