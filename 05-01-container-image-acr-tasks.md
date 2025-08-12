@@ -25,7 +25,9 @@
 
      クラウド シェルは、Azure portal の下部にあるウィンドウにコマンド ライン インターフェイスを提供します。
 
- 5. 次のコマンドを実行して、基本的なコンテナーレジストリを作成します。レジストリ名は Azure 内で一意で、5 文字から 50 文字の英数字を含める必要があります。**myContainerRegistry** を一意の値に置き換えます。
+ 3. 次のコマンドを実行して、基本的なコンテナーレジストリを作成します。レジストリ名は Azure 内で一意で、5 文字から 50 文字の英数字を含める必要があります。**myContainerRegistry** を一意の値に置き換えます。
+
+    ※ XXXXXXXXにはLabUser-XXXXXXXXと同じ8桁の数字を入力します。
 
     ```
     az acr create --resource-group myResourceGroup \
@@ -51,6 +53,8 @@
     
 
  2. 次の **az acr build** コマンドを実行して、イメージをビルドし、イメージが正常にビルドされたら、レジストリにプッシュします。**myContainerRegistry** を前に作成した名前に置き換えます。
+
+    ※ XXXXXXXXにはLabUser-XXXXXXXXと同じ8桁の数字を入力します。
 
     ```
     az acr build --image sample/hello-world:v1  \
@@ -85,7 +89,9 @@
 
  
 
- 1. 次のコマンドを実行して、レジストリ内のリポジトリを一覧表示します。**myContainerRegistry** を前に作成した名前に置き換えます。
+ 1. 次のコマンドを実行して、レジストリ内のリポジトリを一覧表示します。
+
+    ※ XXXXXXXXにはLabUser-XXXXXXXXと同じ8桁の数字を入力します。
 
     ```
     az acr repository list --name mycontainerregistryXXXXXXXX --output table
@@ -103,7 +109,9 @@
 
     
 
- 2. 次のコマンドを実行して、**sample/hello-world** リポジトリのタグを一覧表示します。**myContainerRegistry** を前に使用した名前に置き換えます。
+ 2. 次のコマンドを実行して、**sample/hello-world** リポジトリのタグを一覧表示します。
+
+    ※ XXXXXXXXにはLabUser-XXXXXXXXと同じ8桁の数字を入力します。
 
     ```
     az acr repository show-tags --name mycontainerregistryXXXXXXXX \

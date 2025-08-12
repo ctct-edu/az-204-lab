@@ -40,13 +40,15 @@
     
       Azure Function Core Tools のインストール中にエラーが発生した場合は、エラー コードに基づいて解決策を検索します。次に、前の手順で **winget install** コマンドを再試行します。
 
+
+
 ## ローカルプロジェクトを作成する
 
 
 
 このセクションでは、Visual Studio Code を使用して、C# でローカルの Azure Functions プロジェクトを作成します。この演習の後半では、関数コードを Azure に発行します。
 
-(事前準備)デスクトップに「Func」という名前のフォルダーを作成してください。
+(事前準備) デスクトップに「Func」という名前のフォルダーを作成してください。
 
 1. Visual Studio Code で、F1 キーを押してコマンド パレットを開き、**Azure Functions: Create New Project...** を検索して実行します。
 
@@ -125,6 +127,8 @@ Visual Studio Code は Azure Functions Core ツールと統合されているた
    ![](./media/AutomaticallySingin.jpg)
 
 3. サインインに成功したら、新しいブラウザーウィンドウを閉じることができます。Azure アカウントに属するサブスクリプションがサイド バーに表示されます。
+
+
 
 ### Azure でリソースを作成する
 

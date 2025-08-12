@@ -11,6 +11,8 @@
 
 この演習は完了するまでに約 **15** 分かかります。
 
+
+
 ## 始める前に
 
 
@@ -21,6 +23,8 @@
 - [サポートされているプラットフォーム](https://code.visualstudio.com/docs/supporting/requirements#_platforms)の 1 つ上の [Visual Studio Code](https://code.visualstudio.com/)。
 - [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) 以降。
 - Visual Studio Code 用の [C# 開発キット](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)。
+
+
 
 ## 新しいアプリケーションを登録する
 
@@ -34,7 +38,7 @@
 
    | 畑                                     | 価値                                                         |
    | -------------------------------------- | ------------------------------------------------------------ |
-   | **名前**                               | `myGraphApplicationXX`　(XXは受講者番号)と入力します         |
+   | **名前**                               | `myGraphApplicationXX`　(※ XXにはUserXXと同じ2桁の数字を入力します。)と入力します |
    | **サポートされているアカウントの種類** | **[この組織ディレクトリのみに含まれるアカウント**] を選択します。 |
    | **リダイレクト URI (オプション)**      | ドロップダウンリストで **[パブリック クライアント/ネイティブ (モバイルとデスクトップ)]** を選択し、右側のボックスに `http://localhost` と入力します。 |
 

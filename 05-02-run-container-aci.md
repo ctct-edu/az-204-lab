@@ -33,7 +33,9 @@
 
 コンテナーを作成するには、名前、Docker イメージ、Azure リソース グループを **az container create** コマンドに指定します。コンテナーをインターネットに公開するには、DNS 名ラベルを指定します。
 
-1. 次のコマンドを実行して、コンテナーをインターネットに公開するために使用される DNS 名を作成します。DNS 名は一意である必要がある場合は、Cloud Shell からこのコマンドを実行して、一意の名前を保持する変数を作成します。(XXXXXXXXは修正してください)
+1. 次のコマンドを実行して、コンテナーをインターネットに公開するために使用される DNS 名を作成します。DNS 名は一意である必要がある場合は、Cloud Shell からこのコマンドを実行して、一意の名前を保持する変数を作成します
+
+   ※ XXXXXXXXにはLabUser-XXXXXXXXと同じ8桁の数字を入力します。
 
    ```
    DNS_NAME_LABEL=aci-example-XXXXXXXX
@@ -41,7 +43,11 @@
 
    
 
-2. 次のコマンドを実行して、コンテナインスタンスを作成します(XXXXXXXXは修正してください)。操作が完了するまでに数分かかります。
+2. 次のコマンドを実行して、コンテナインスタンスを作成します。
+
+   ※ XXXXXXXXにはLabUser-XXXXXXXXと同じ8桁の数字を入力します。
+
+   操作が完了するまでに数分かかります。
 
    ```
    az container create --resource-group myResourceGrouplodXXXXXXXX \
@@ -59,6 +65,8 @@
    前のコマンドでは、**$DNS_NAME_LABEL** が DNS 名を指定します。イメージ名 **mcr.microsoft.com/azuredocs/aci-helloworld** は、基本的な Node.js Web アプリケーションを実行する Docker イメージを参照します。
 
 **az container create** コマンドが終了したら、次のセクションに進みます。
+
+
 
 ## コンテナーが実行されていることを確認する
 

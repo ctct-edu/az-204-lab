@@ -31,7 +31,11 @@
 
    クラウド シェルは、Azure portal の下部にあるウィンドウにコマンド ライン インターフェイスを提供します。
 
-3. CLI コマンドで使用する変数をいくつか作成すると、入力の量が減ります。**myLocation** を前に選択した値に置き換えます。APIM 名はグローバルに一意の名前である必要があり、次のスクリプトはランダムな文字列を生成します。**myEmail** をアクセスできるメール アドレスに置き換えます。
+3. CLI コマンドで使用する変数をいくつか作成すると、入力の量が減ります。**myLocation** を前に選択した値に置き換えます。
+
+   ※ XXXXXXXXにはLabUser-XXXXXXXXと同じ8桁の数字を入力します。
+
+   ※ **myEmail** をアクセスできるメール アドレスに置き換えます。
 
    ```
    myApiName=import-apim-XXXXXXXX
@@ -42,6 +46,8 @@
    
 
 4. APIM インスタンスを作成します。**az apim create** コマンドを使用して、インスタンスを作成します。
+
+   ※ XXXXXXXXにはLabUser-XXXXXXXXと同じ8桁の数字を入力します。
 
    ```
    az apim create -n $myApiName \
