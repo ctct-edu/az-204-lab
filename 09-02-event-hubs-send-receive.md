@@ -302,7 +302,9 @@ Azure Event Hubs 名前空間は、Azure 内のイベント ハブ リソース�
 
    > **注**: ほとんどのシナリオでは、*az login* を使用するだけで十分です。ただし、複数のテナントにサブスクリプションがある場合は、*--tenant* パラメーターを使用してテナントを指定する必要がある場合があります。詳細については、「[Azure CLI を使用して対話形式で Azure にサインインする」](https://learn.microsoft.com/cli/azure/authenticate-azure-cli-interactively)を参照してください。
 
-2. 次のコマンドを実行して、アプリケーションを起動します。
+2. Select a subscription and tenant (Type a number or Enter for no changes)　は何も入力せずEnterを押してください。
+
+3. 次のコマンドを実行して、アプリケーションを起動します。
 
    ```
    dotnet run
