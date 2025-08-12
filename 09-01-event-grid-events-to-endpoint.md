@@ -1,257 +1,321 @@
----
-lab:
-    topic: Azure events and messaging
-    title: 'Route events to a custom endpoint with Azure Event Grid'
-    description: 'Learn how to use Azure Event Grid to route events to a custom endpoint.'
----
+# Azure Event Grid を使用してカスタム エンドポイントにイベントをルーティングする
 
-# Route events to a custom endpoint with Azure Event Grid
 
-In this exercise, you create an Azure Event Grid topic and a web app endpoint, then build a .NET console application that sends custom events to the Event Grid topic. You learn how to configure event subscriptions, authenticate with Event Grid, and verify that your events are successfully routed to the endpoint by viewing them in the web app.
 
-Tasks performed in this exercise:
+この演習では、Azure Event Grid トピックと Web アプリ エンドポイントを作成し、カスタム イベントを Event Grid トピックに送信する .NET コンソール アプリケーションを構築します。イベント サブスクリプションを構成し、Event Grid で認証し、Web アプリでイベントを表示してイベントがエンドポイントに正常にルーティングされたことを確認する方法について説明します。
 
-* Create Azure Event Grid resources
-* Enable an Event Grid resource provider
-* Create a topic in Event Grid
-* Create a message endpoint
-* Subscribe to the topic
-* Send an event with a .NET console app
-* Clean up resources
+この演習で実行されるタスク:
 
-This exercise takes approximately **30** minutes to complete.
+- Azure Event Grid リソースを作成する
+- Event Grid リソース プロバイダーを有効にする
+- Event Grid でトピックを作成する
+- メッセージエンドポイントを作成する
+- トピックを購読する
+- .NET コンソール アプリを使用してイベントを送信する
+- リソースをクリーンアップする
 
-## Create Azure Event Grid resources
+この演習は完了するまでに約**30**分かかります。
 
-In this section of the exercise you create the needed resources in Azure with the Azure CLI.
+## Azure Event Grid リソースを作成する
 
-1. In your browser navigate to the Azure portal [https://portal.azure.com](https://portal.azure.com); signing in with your Azure credentials if prompted.
 
-1. Use the **[\>_]** button to the right of the search bar at the top of the page to create a new cloud shell in the Azure portal, selecting a ***Bash*** environment. The cloud shell provides a command line interface in a pane at the bottom of the Azure portal.
 
-    > **Note**: If you have previously created a cloud shell that uses a *PowerShell* environment, switch it to ***Bash***.
+演習のこのセクションでは、Azure CLI を使用して Azure に必要なリソースを作成します。
 
-1. In the cloud shell toolbar, in the **Settings** menu, select **Go to Classic version** (this is required to use the code editor).
+1. ブラウザーで Azure portal [https://portal.azure.com](https://portal.azure.com/) に移動します。プロンプトが表示されたら、Azure 資格情報を使用してサインインします。
 
-1. Create a resource group for the resources needed for this exercise. If you already have a resource group you want to use, proceed to the next step. Replace **myResourceGroup** with a name you want to use for the resource group. You can replace **eastus** with a region near you if needed.
+2. ページ上部の検索バーの右側にある **[>_]** ボタンを使用して、Azure portal で新しいクラウド シェルを作成し、***Bash*** 環境を選択します。「作業の開始」ウィンドウが表示された場合、以下のように操作します。
 
-    ```bash
-    az group create --name myResourceGroup --location eastus
-    ```
+   ・「ストレージアカウントは不要です」を選択
 
-1. Many of the commands require unique names and use the same parameters. Creating some variables will reduce the changes needed to the commands that create resources. Run the following commands to create the needed variables. Replace **myResourceGroup** with the name you're using for this exercise. If you changed the location in the previous step, make the same change in the **location** variable.
+   ・「サブスクリプション」をドロップダウンにて選択し「適用をクリック」
 
-    ```bash
-    let rNum=$RANDOM
-    resourceGroup=myResourceGroup
-    location=eastus
-    topicName="mytopic-evgtopic-${rNum}"
-    siteName="evgsite-${rNum}"
-    siteURL="https://${siteName}.azurewebsites.net"
-    ```
+   クラウド シェルは、Azure portal の下部にあるウィンドウにコマンド ライン インターフェイスを提供します。
 
-### Enable an Event Grid resource provider
+3. クラウド シェル ツール バーの [**設定**] メニューで、[**クラシック バージョンに移動**] を選択します (これはコード エディターを使用するために必要です)。
 
-An Azure Resource Provider is a service that defines and manages specific types of resources in Azure. It's what Azure uses behind the scenes when you deploy or manage resources. Register the Event Grid resource provider with the **az provider register** command. 
+4. コマンドの多くは一意の名前を必要とし、同じパラメータを使用します。いくつかの変数を作成すると、リソースを作成するコマンドに必要な変更が減ります。次のコマンドを実行して、必要な変数を作成します。**myResourceGroup** を、この演習で使用している名前に置き換えます。前の手順で場所を変更した場合は、**場所**変数で同じ変更を行います。
 
-```bash
+   ```
+   let rNum=XXXXXXXX
+   resourceGroup=myResourceGroup
+   location=eastus
+   topicName="mytopic-evgtopic-${rNum}"
+   siteName="evgsite-${rNum}"
+   siteURL="https://${siteName}.azurewebsites.net"
+   ```
+
+   
+
+
+### Event Grid リソース プロバイダーを有効にする
+
+
+
+Azure リソース プロバイダーは、Azure 内の特定の種類のリソースを定義および管理するサービスです。これは、リソースをデプロイまたは管理するときに Azure がバックグラウンドで使用するものです。Event Grid リソース プロバイダーを **az provider register** コマンドで登録します。
+
+```
 az provider register --namespace Microsoft.EventGrid
 ```
 
-It can take a few minutes for the registration to complete. You can check the status with the following command.
 
-```bash
+
+登録が完了するまでに数分かかる場合があります。以下のコマンドで状態を確認できます。
+
+```
 az provider show --namespace Microsoft.EventGrid --query "registrationState"
 ```
 
-> **Note:** This step is only needed on subscriptions that haven't previously used Event Grid.
 
-### Create a topic in Event Grid
 
-Create a topic by using the **az eventgrid topic create** command. The name must be unique because it's part of the DNS entry.  
+> **手記：**この手順は、以前に Event Grid を使用したことのないサブスクリプションでのみ必要です。
 
-```bash
+
+
+### Event Grid でトピックを作成する
+
+
+
+**az eventgrid topic create** コマンドを使用してトピックを作成します。名前は DNS エントリの一部であるため、一意である必要があります。
+
+```
 az eventgrid topic create --name $topicName \
     --location $location \
     --resource-group $resourceGroup
 ```
 
-### Create a message endpoint
 
-Before subscribing to the custom topic, we need to create the endpoint for the event message. Typically, the endpoint takes actions based on the event data. The following script uses a prebuilt web app that displays the event messages. The deployed solution includes an App Service plan, an App Service web app, and source code from GitHub.
 
-1. Run the following commands to create a message endpoint. The **echo** command will display the site URL for the endpoint.
+### メッセージエンドポイントを作成する
 
-    ```bash
-    az deployment group create \
-        --resource-group $resourceGroup \
-        --template-uri "https://raw.githubusercontent.com/Azure-Samples/azure-event-grid-viewer/main/azuredeploy.json" \
-        --parameters siteName=$siteName hostingPlanName=viewerhost
-    
-    echo "Your web app URL: ${siteURL}"
-    ```
 
-    > **Note:** This command may take a few minutes to complete.
 
-1. Open a new tab in your browser and navigate to the URL generated at the end of the previous script to ensure the web app is running. You should see the site with no messages currently displayed.
+カスタムトピックをサブスクライブする前に、イベントメッセージのエンドポイントを作成する必要があります。通常、エンドポイントはイベントデータに基づいてアクションを実行します。次のスクリプトでは、イベント メッセージを表示する事前構築済みの Web アプリを使用します。デプロイされたソリューションには、App Service プラン、App Service Web アプリ、GitHub のソース コードが含まれます。
 
-    > **Tip:** Leave the browser running, it is used to show updates.
+1. 次のコマンドを実行して、メッセージエンドポイントを作成します。**echo** コマンドは、エンドポイントのサイト URL を表示します。
 
-### Subscribe to the topic
+   ```
+   az deployment group create \
+       --resource-group $resourceGroup \
+       --template-uri "https://raw.githubusercontent.com/Azure-Samples/azure-event-grid-viewer/main/azuredeploy.json" \
+       --parameters siteName=$siteName hostingPlanName=viewerhost
+   
+   echo "Your web app URL: ${siteURL}"
+   ```
 
-You subscribe to an Event Grid topic to tell Event Grid which events you want to track and where to send those events. 
+   
 
-1. Subscribe to a topic using the **az eventgrid event-subscription create** command. The following script retrieves the subscription ID from your account and uses it in the creation of the event subscription.
+   > **手記：**このコマンドは、完了するまでに数分かかる場合があります。
 
-    ```bash
-    endpoint="${siteURL}/api/updates"
-    topicId=$(az eventgrid topic show --resource-group $resourceGroup \
-        --name $topicName --query "id" --output tsv)
-    
-    az eventgrid event-subscription create \
-        --source-resource-id $topicId \
-        --name TopicSubscription \
-        --endpoint $endpoint
-    ```
+2. ブラウザーで新しいタブを開き、前のスクリプトの最後に生成された URL に移動して、Web アプリが実行されていることを確認します。現在メッセージが表示されていないサイトが表示されます。
 
-1. View your web app again, and notice that a subscription validation event has been sent to it. Select the eye icon to expand the event data. Event Grid sends the validation event so the endpoint can verify that it wants to receive event data. The web app includes code to validate the subscription.
+   > **手記：**ブラウザを起動したままにしておくと、更新を表示するために使用されます。
 
-## Send an event with a .NET console application
 
-Now that the needed resources are deployed to Azure the next step is to set up the console application. The following steps are performed in the cloud shell.
 
->**Tip:** Resize the cloud shell to display more information, and code, by dragging the top border. You can also use the minimize and maximize buttons to switch between the cloud shell and the main portal interface.
+### トピックを購読する
 
-1. Run the following commands to create a directory to contain the project and change into the project directory.
 
-    ```bash
-    mkdir eventgrid
-    cd eventgrid
-    ```
 
-1. Create the .NET console application.
+Event Grid トピックをサブスクライブして、追跡するイベントと、それらのイベントを送信する場所を Event Grid に指示します。
 
-    ```bash
-    dotnet new console
-    ```
+1. **az eventgrid event-subscription create** コマンドを使用してトピックをサブスクライブします。次のスクリプトは、アカウントからサブスクリプション ID を取得し、イベント サブスクリプションの作成に使用します。
 
-1. Run the following commands to add the **Azure.Messaging.EventGrid** and **dotenv.net** packages to the project.
+   ```
+   endpoint="${siteURL}/api/updates"
+   topicId=$(az eventgrid topic show --resource-group $resourceGroup \
+       --name $topicName --query "id" --output tsv)
+   
+   az eventgrid event-subscription create \
+       --source-resource-id $topicId \
+       --name TopicSubscription \
+       --endpoint $endpoint
+   ```
 
-    ```bash
-    dotnet add package Azure.Messaging.EventGrid
-    dotnet add package dotenv.net
-    ```
+   
 
-### Configure the console application
+2. Web アプリをもう一度表示し、サブスクリプション検証イベントが送信されたことを確認します。目のアイコンを選択して、イベント データを展開します。Event Grid は、エンドポイントがイベント データを受信することを確認できるように、検証イベントを送信します。Web アプリには、サブスクリプションを検証するためのコードが含まれています。
 
-In this section you retrieve the topic endpoint and access key so they can be added to a **.env** file to hold those secrets.
 
-1. Run the following commands to retrieve the URL and access key for the topic you created earlier. Be sure to record these values.
 
-    ```bash
-    az eventgrid topic show --name $topicName -g $resourceGroup --query "endpoint" --output tsv
-    az eventgrid topic key list --name $topicName -g $resourceGroup --query "key1" --output tsv
-    ```
+## .NET コンソール アプリケーションを使用してイベントを送信する
 
-1. Run the following command to create the **.env** file to hold the secrets, and then open it in the code editor.
 
-    ```bash
-    touch .env
-    code .env
-    ```
 
-1. Add the following code to the **.env** file. Replace **YOUR_TOPIC_ENDPOINT** and **YOUR_TOPIC_ACCESS_KEY** with the values you recorded earlier.
+必要なリソースが Azure にデプロイされたので、次の手順はコンソール アプリケーションを設定することです。次の手順は、クラウドシェルで実行されます。
 
-    ```
-    TOPIC_ENDPOINT="YOUR_TOPIC_ENDPOINT"
-    TOPIC_ACCESS_KEY="YOUR_TOPIC_ACCESS_KEY"
-    ```
+> **手記：**クラウドシェルのサイズを変更して、上部の境界線をドラッグして、より多くの情報とコードを表示します。[最小化] ボタンと [最大化] ボタンを使用して、クラウド シェルとメイン ポータル インターフェイスを切り替えることもできます。
 
-1. Press **ctrl+s** to save the file, then **ctrl+q** to exit the editor.
+1. 次のコマンドを実行して、プロジェクトを含むディレクトリを作成し、プロジェクト ディレクトリに変更します。
 
-Now it's time to replace the template code in the **Program.cs** file using the editor in the cloud shell.
+   ```
+   mkdir eventgrid
+   cd eventgrid
+   ```
 
-### Add the code for the project
+   
 
-1. Run the following command in the cloud shell to begin editing the application.
+2. .NET コンソール アプリケーションを作成します。
 
-    ```bash
-    code Program.cs
-    ```
+   ```
+   dotnet new console
+   ```
 
-1. Replace any existing code with the following code. Be sure to review the comments in the code.
+   
 
-    ```csharp
-    using dotenv.net; 
-    using Azure.Messaging.EventGrid; 
-    
-    // Load environment variables from .env file
-    DotEnv.Load();
-    var envVars = DotEnv.Read();
-    
-    // Start the asynchronous process to send an Event Grid event
-    ProcessAsync().GetAwaiter().GetResult();
-    
-    async Task ProcessAsync()
-    {
-        // Retrieve Event Grid topic endpoint and access key from environment variables
-        var topicEndpoint = envVars["TOPIC_ENDPOINT"];
-        var topicKey = envVars["TOPIC_ACCESS_KEY"];
-        
-        // Check if the required environment variables are set
-        if (string.IsNullOrEmpty(topicEndpoint) || string.IsNullOrEmpty(topicKey))
-        {
-            Console.WriteLine("Please set TOPIC_ENDPOINT and TOPIC_ACCESS_KEY in your .env file.");
-            return;
-        }
-    
-        // Create an EventGridPublisherClient to send events to the specified topic
-        EventGridPublisherClient client = new EventGridPublisherClient
-            (new Uri(topicEndpoint),
-            new Azure.AzureKeyCredential(topicKey));
-    
-        // Create a new EventGridEvent with sample data
-        var eventGridEvent = new EventGridEvent(
-            subject: "ExampleSubject",
-            eventType: "ExampleEventType",
-            dataVersion: "1.0",
-            data: new { Message = "Hello, Event Grid!" }
-        );
-    
-        // Send the event to Azure Event Grid
-        await client.SendEventAsync(eventGridEvent);
-        Console.WriteLine("Event sent successfully.");
-    }
-    ```
+3. 次のコマンドを実行して、**Azure.Messaging.EventGrid** パッケージと **dotenv.net** パッケージをプロジェクトに追加します。
 
-1. Press **ctrl+s** to save the file, then **ctrl+q** to exit the editor.
+   ```
+   dotnet add package Azure.Messaging.EventGrid
+   dotnet add package dotenv.net
+   ```
 
-## Sign into Azure and run the app
+   
 
-1. In the cloud shell command-line pane, enter the following command to sign into Azure.
+### コンソール アプリケーションの構成
 
-    ```
-    az login
-    ```
 
-    **<font color="red">You must sign into Azure - even though the cloud shell session is already authenticated.</font>**
 
-    > **Note**: In most scenarios, just using *az login* will be sufficient. However, if you have subscriptions in multiple tenants, you may need to specify the tenant by using the *--tenant* parameter. See [Sign into Azure interactively using Azure CLI](https://learn.microsoft.com/cli/azure/authenticate-azure-cli-interactively) for details.
+このセクションでは、トピックエンドポイントとアクセスキーを取得して、それらを **.env** ファイルに追加して、これらのシークレットを保持できるようにします。
 
-1. Run the following command in the cloud shell to start the console application. You will see the message **Event sent successfully.** when the message is sent.
+1. 次のコマンドを実行して、前に作成したトピックの URL とアクセスキーを取得します。これらの値を必ず記録してください。
 
-    ```bash
-    dotnet run
-    ```
+   ```
+   az eventgrid topic show --name $topicName -g $resourceGroup --query "endpoint" --output tsv
+   az eventgrid topic key list --name $topicName -g $resourceGroup --query "key1" --output tsv
+   ```
 
-1. View your web app to see the event you just sent. Select the eye icon to expand the event data.
+   
 
-## Clean up resources
+2. 次のコマンドを実行して、シークレットを保持する **.env** ファイルを作成し、コード エディターで開きます。
 
-Now that you finished the exercise, you should delete the cloud resources you created to avoid unnecessary resource usage.
+   ```
+   touch .env
+   code .env
+   ```
 
-1. Navigate to the resource group you created and view the contents of the resources used in this exercise.
-1. On the toolbar, select **Delete resource group**.
-1. Enter the resource group name and confirm that you want to delete it.
+   
 
-> **CAUTION:** Deleting a resource group deletes all resources contained within it. If you chose an existing resource group for this exercise, any existing resources outside the scope of this exercise will also be deleted.
+3. 次のコードを **.env** ファイルに追加します。**YOUR_TOPIC_ENDPOINT**と**YOUR_TOPIC_ACCESS_KEY**を前に記録した値に置き換えます。
+
+   ```
+   TOPIC_ENDPOINT="YOUR_TOPIC_ENDPOINT"
+   TOPIC_ACCESS_KEY="YOUR_TOPIC_ACCESS_KEY"
+   ```
+
+   
+
+4. **ctrl+s を押して**ファイルを保存し、**次に ctrl+q** を押してエディターを終了します。
+
+次に、クラウド シェルのエディターを使用して、**Program.cs** ファイル内のテンプレート コードを置き換えます。
+
+### プロジェクトのコードを追加する
+
+
+
+1. クラウドシェルで次のコマンドを実行して、アプリケーションの編集を開始します。
+
+   ```
+   code Program.cs
+   ```
+
+   
+
+2. 既存のコードを次のコードに置き換えます。コード内のコメントを必ず確認してください。
+
+   ```
+   using dotenv.net; 
+   using Azure.Messaging.EventGrid; 
+   
+   // Load environment variables from .env file
+   DotEnv.Load();
+   var envVars = DotEnv.Read();
+   
+   // Start the asynchronous process to send an Event Grid event
+   ProcessAsync().GetAwaiter().GetResult();
+   
+   async Task ProcessAsync()
+   {
+       // Retrieve Event Grid topic endpoint and access key from environment variables
+       var topicEndpoint = envVars["TOPIC_ENDPOINT"];
+       var topicKey = envVars["TOPIC_ACCESS_KEY"];
+       
+       // Check if the required environment variables are set
+       if (string.IsNullOrEmpty(topicEndpoint) || string.IsNullOrEmpty(topicKey))
+       {
+           Console.WriteLine("Please set TOPIC_ENDPOINT and TOPIC_ACCESS_KEY in your .env file.");
+           return;
+       }
+   
+       // Create an EventGridPublisherClient to send events to the specified topic
+       EventGridPublisherClient client = new EventGridPublisherClient
+           (new Uri(topicEndpoint),
+           new Azure.AzureKeyCredential(topicKey));
+   
+       // Create a new EventGridEvent with sample data
+       var eventGridEvent = new EventGridEvent(
+           subject: "ExampleSubject",
+           eventType: "ExampleEventType",
+           dataVersion: "1.0",
+           data: new { Message = "Hello, Event Grid!" }
+       );
+   
+       // Send the event to Azure Event Grid
+       await client.SendEventAsync(eventGridEvent);
+       Console.WriteLine("Event sent successfully.");
+   }
+   ```
+
+   
+
+3. **ctrl+s を押して**ファイルを保存し、**次に ctrl+q** を押してエディターを終了します。
+
+## Azure にサインインしてアプリを実行する
+
+
+
+1. クラウド シェルのコマンド ライン ウィンドウで、次のコマンドを入力して Azure にサインインします。
+
+   ```
+   az login
+   ```
+
+   
+
+   **クラウド シェル セッションが既に認証されている場合でも、Azure にサインインする必要があります。** 具体的には下記のメッセージが表示されたら、https:// ～ devicelogin のリンクをクリックし、「コード(毎回変わる)」を入力した後、portalのサインインで使用したアカウントを選択し、「続行」をクリックします。
+
+   Cloud Shell is automatically authenticated under the initial account signed-in with. Run 'az login' only if you need to use a different account
+   To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code 「コード(毎回変わる)」 to authenticate.
+
+   > **注**: ほとんどのシナリオでは、*az login* を使用するだけで十分です。ただし、複数のテナントにサブスクリプションがある場合は、*--tenant* パラメーターを使用してテナントを指定する必要がある場合があります。詳細については、「[Azure CLI を使用して対話形式で Azure にサインインする」](https://learn.microsoft.com/cli/azure/authenticate-azure-cli-interactively)を参照してください。
+
+2. Select a subscription and tenant (Type a number or Enter for no changes)　は何も入力せずEnterを押してください。
+
+3. クラウドシェルで次のコマンドを実行して、コンソールアプリケーションを起動します。メッセージが**「イベントが正常に送信されました」**と表示されます。メッセージが送信されたとき。
+
+   ```
+   dotnet run
+   ```
+
+   
+
+4. Web アプリを表示して、送信したばかりのイベントを確認します。目のアイコンを選択して、イベント データを展開します。
+
+   
+
+ ## リソースをクリーンアップする
+
+ 
+
+ 演習が終了したので、不要なリソースの使用を避けるために、作成したクラウド リソースを削除する必要があります。
+
+1. 作成したリソース・グループに移動し、この演習で使用したリソースの内容を表示します。
+
+2. ツール バーで、**リソース グループの削除** を選択します。
+
+3. リソース グループ名を入力し、削除することを確認します。
+
+   
+
+   **注意：** リソース グループを削除すると、そのグループに含まれるすべてのリソースが削除されます。この演習で既存のリソース グループを選択した場合、この演習の範囲外の既存のリソースも削除されます。
+
