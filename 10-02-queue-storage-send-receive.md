@@ -13,6 +13,8 @@
 
 この演習は完了するまでに約**30**分かかります。
 
+
+
 ## Azure Queue Storage リソースを作成する
 
 
@@ -173,6 +175,8 @@
 
 3. **ctrl+s** を押して変更を保存します。
 
+
+
 ### キュー クライアントを作成し、キューを作成するコードを追加します
 
 
@@ -207,6 +211,8 @@
 
 2. **ctrl+s** キーを押してファイルを保存し、演習を続行します。
 
+
+
 ### キュー内のメッセージを送信および一覧表示するコードを追加する
 
 
@@ -239,6 +245,8 @@
 
 2. **ctrl+s** キーを押してファイルを保存し、演習を続行します。
 
+
+
 ### メッセージを更新し、結果を一覧表示するコードを追加する
 
 
@@ -266,6 +274,8 @@
    
 
 2. **ctrl+s** キーを押してファイルを保存し、演習を続行します。
+
+
 
 ### メッセージとキューを削除するコードを追加する
 
@@ -297,6 +307,8 @@
    
 
 2. **ctrl+s を押して**ファイルを保存し、**次に ctrl+q** を押してエディターを終了します。
+
+
 
 ## Azure にサインインしてアプリを実行する
 
@@ -333,13 +345,20 @@
 
 6. アプリケーションが作成するキューを選択すると、送信されたメッセージを表示し、アプリケーションの動作を監視できます。
 
-## Clean up resources
 
-Now that you finished the exercise, you should delete the cloud resources you created to avoid unnecessary resource usage.
 
-1. Navigate to the resource group you created and view the contents of the resources used in this exercise.
-1. On the toolbar, select **Delete resource group**.
-1. Enter the resource group name and confirm that you want to delete it.
+ ## リソースをクリーンアップする
 
-> **CAUTION:** Deleting a resource group deletes all resources contained within it. If you chose an existing resource group for this exercise, any existing resources outside the scope of this 
+ 
 
+ 演習が終了したので、不要なリソースの使用を避けるために、作成したクラウド リソースを削除する必要があります。
+
+1. 作成したリソース・グループに移動し、この演習で使用したリソースの内容を表示します。
+
+2. ツール バーで、**リソース グループの削除** を選択します。
+
+3. リソース グループ名を入力し、削除することを確認します。
+
+   
+
+   **注意：** リソース グループを削除すると、そのグループに含まれるすべてのリソースが削除されます。この演習で既存のリソース グループを選択した場合、この演習の範囲外の既存のリソースも削除されます。
