@@ -13,6 +13,8 @@
 
 この演習は完了するまでに約**30**分かかります。
 
+
+
 ## Azure Event Hubs リソースを作成する
 
 
@@ -31,20 +33,12 @@
 
 3. クラウド シェル ツール バーの [**設定**] メニューで、[**クラシック バージョンに移動**] を選択します (これはコード エディターを使用するために必要です)。
 
-4. この演習に必要なリソースのリソース グループを作成します。使用するリソース・グループが既にある場合は、次のステップに進みます。**myResourceGroup** をリソース グループに使用する名前に置き換えます。必要に応じて、**eastus** を近くのリージョンに置き換えることができます。
+4. コマンドの多くは一意の名前を必要とし、同じパラメータを使用します。いくつかの変数を作成すると、リソースを作成するコマンドに必要な変更が減ります。次のコマンドを実行して、必要な変数を作成します。**myResourceGroup** を、この演習で使用している名前に置き換えます。前の手順で場所を変更した場合は、**場所**変数で同じ変更を行います。
 
    ```
-   az group create --name myResourceGroup --location eastus
-   ```
-
-   
-
-5. コマンドの多くは一意の名前を必要とし、同じパラメータを使用します。いくつかの変数を作成すると、リソースを作成するコマンドに必要な変更が減ります。次のコマンドを実行して、必要な変数を作成します。**myResourceGroup** を、この演習で使用している名前に置き換えます。前の手順で場所を変更した場合は、**場所**変数で同じ変更を行います。
-
-   ```
-   resourceGroup=myResourceGroup
+   resourceGroup=myResourceGrouplodXXXXXXXX
    location=eastus
-   namespaceName=eventhubsns$RANDOM
+   namespaceName=eventhubsnsXXXXXXXX
    ```
 
    
@@ -155,7 +149,7 @@ Azure Event Hubs 名前空間は、Azure 内のイベント ハブ リソース�
 
    
 
-2. 既存のコンテンツを次のコードに置き換えます。コード内のコメントを確認し、**YOUR_EVENT_HUB_NAMESPACE**をイベント ハブ名前空間に置き換えてください。
+2. 既存のコンテンツを次のコードに置き換えます。コード内のコメントを確認し、**YOUR_EVENT_HUB_NAMESPACE**をご自身のイベント ハブ名前空間(eventhubsnsXXXXXXXX)に置き換えてください。
 
    ```
    using Azure.Messaging.EventHubs;
@@ -301,7 +295,10 @@ Azure Event Hubs 名前空間は、Azure 内のイベント ハブ リソース�
 
    
 
-   **クラウド シェル セッションが既に認証されている場合でも、Azure にサインインする必要があります。**
+   **クラウド シェル セッションが既に認証されている場合でも、Azure にサインインする必要があります。** 具体的には下記のメッセージが表示されたら、https:// ～ devicelogin のリンクをクリックし、「コード(毎回変わる)」を入力した後、portalのサインインで使用したアカウントを選択し、「続行」をクリックします。
+
+   Cloud Shell is automatically authenticated under the initial account signed-in with. Run 'az login' only if you need to use a different account
+   To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code 「コード(毎回変わる)」 to authenticate.
 
    > **注**: ほとんどのシナリオでは、*az login* を使用するだけで十分です。ただし、複数のテナントにサブスクリプションがある場合は、*--tenant* パラメーターを使用してテナントを指定する必要がある場合があります。詳細については、「[Azure CLI を使用して対話形式で Azure にサインインする」](https://learn.microsoft.com/cli/azure/authenticate-azure-cli-interactively)を参照してください。
 
