@@ -168,7 +168,7 @@ Visual Studio Code は Azure Functions Core ツールと統合されているた
 
 > **!重要:** 既存の関数にパブリッシュすると、以前のデプロイメントが上書きされます。
 
-1. コVisual Studio Code で、F1 キーを押してコマンド パレットを開き、**Azure Functions: Deploy to Function App...**を検索して実行します。
+1. コVisual Studio Code で、F1 キーを押してコマンド パレットを開き、 **Azure Functions: Deploy to Function App...** を検索して実行します。
 
 2. リソースの作成時に使用したサブスクリプションを選択します。
 
