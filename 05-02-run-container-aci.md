@@ -45,7 +45,7 @@
 
 2. 次のコマンドを実行して、コンテナインスタンスを作成します。
 
-   ※ XXXXXXXXにはLabUser-XXXXXXXXと同じ8桁の数字を入力します。
+   ※ XXXXXXXXにはLabUser-XXXXXXXXと同じ8桁の数字を入力します(XXXXXXXXは修正してください)。
 
    操作が完了するまでに数分かかります。
 

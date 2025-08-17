@@ -64,7 +64,7 @@ Azure Container Apps に登録する必要がある名前空間は 2 つあり�
 
 Azure Container Apps の環境では、コンテナー アプリのグループを囲むセキュリティで保護された境界が作成されます。同じ環境にデプロイされた Container Apps は、同じ仮想ネットワークにデプロイされ、同じ Log Analytics ワークスペースにログが書き込まれます。
 
-1. **az containerapp env create** コマンドを使用して環境を作成します。**myResourceGroup** と **myLocation** を前に使用した値に置き換えます。操作が完了するまでに数分かかります。
+1. **az containerapp env create** コマンドを使用して環境を作成します。操作が完了するまでに数分かかります。(もし失敗する場合は環境のリソースグループの名前とリージョンを確認し、コマンドパラメータの値を同じものに変更してください。)
 
    ```
    az containerapp env create \
