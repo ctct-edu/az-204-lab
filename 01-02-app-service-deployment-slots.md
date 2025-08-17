@@ -48,9 +48,9 @@
    ※ XXにはUserXXと同じ2桁の数字を入力します。
 
    ```
-   resourceGroup=userXX
+   resourceGroup=rg-mywebapplodXXXXXXXX
    
-   appName=mywebapp$RANDOM
+   appName=mywebappXXXXXXXX
    echo $appName
    
    ```
@@ -64,26 +64,13 @@
    ```
    cd html-docs-hello-world
    
-   az configure --defaults location=canadacentral
-   
-   az appservice plan create \
-     --resource-group $resourceGroup \
-     --name "${appName}-plan" \
-     --sku P0v3
-     
-   az webapp create \
-     --resource-group $resourceGroup \
-     --name $appName \
-     --plan "${appName}-plan" \
-      --runtime "DOTNET|8"
-   
    az webapp up -g $resourceGroup -n $appName --sku P0V3 --html
    ```
-
    
-
+   
+   
    デプロイが完了したので、Web アプリを表示します。
-
+   
 6. Azure portal で、デプロイした Web アプリに移動します。**[リソース、サービス、ドキュメントの検索 (G + /)]** 検索バーに先ほどメモした名前を入力し、一覧からリソースを選択できます。
 
 7. [**要点**] セクションの [**既定のドメイン]** フィールドにある Web アプリへのリンクを選択します。リンクをクリックすると、サイトが新しいタブで開きます。
