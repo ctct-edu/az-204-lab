@@ -37,6 +37,7 @@
    resourceGroup=myResourceGroup
    location=eastus
    appConfigName=appconfignameXXXXXXXX
+   
    ```
 
    
@@ -70,9 +71,10 @@
    ```
    az appconfig create --location $location \
        --name $appConfigName \
-       --resource-group $resourceGroup
+       --resource-group $resourceGroup \
+       --sku Free
    ```
-
+   
    
 
 ### Microsoft Entra ユーザー名にロールを割り当てる
