@@ -118,11 +118,11 @@ Visual Studio Code は Azure Functions Core ツールと統合されているた
 
    [![](./media/functions-sign-into-azure.png)]
 
-   「The extention 'Azure Resources' wants to sign in using Microsoft」のダイアログが出た場合は「Allow」を選択します。
+   「The extention 'Azure Resources' wants to sign in using Microsoft」のダイアログが出た場合は **Allow** を選択します。
 
 2. ブラウザーでプロンプトが表示されたら、Azure アカウントを選択し、Azure アカウントの資格情報を使用してサインインします。
 
-   「Automatically sign in ～」のダイアログが出た場合は「NO, this app only」を選択します。
+   「Automatically sign in ～」のダイアログが出た場合は **NO, this app only** を選択します。
 
    ![](./media/AutomaticallySingin.jpg)
 
@@ -148,7 +148,7 @@ Visual Studio Code は Azure Functions Core ツールと統合されているた
    | Enter a globally unique name for the function app | URL パスで有効な名前を入力します (例: )。入力した名前は、一意であることを確認するために検証されます。**`myfunctionappXXXXXXXX`を入力します。** |
    | Select a location for new resources               | パフォーマンスを向上させるには、お近くの地域(Japan East 等)を選択してください。 |
    | Select a runtime stack                            | **[.NET 8.0 Isolated]** を選択します。                       |
-   | Select resource authentication type               | **Secret** を選択します、                                    |
+   | Select resource authentication type               | **Secrets** を選択します、                                   |
    
    拡張機能は、ターミナル ウィンドウの **AZURE** 領域で作成されている個々のリソースの状態を表示します。
    
