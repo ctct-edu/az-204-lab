@@ -105,7 +105,7 @@
 
 1. クラウド シェルで、「**code index.html**」と入力してエディターを開きます。(ここで以前のエクスペリエンスに戻るよう要求された場合は従ってください。その後  cd html-docs-hello-world コマンドを実行してから再度 code index.html を実行する必要があります。
 
-2. **h1** 見出しタグを見つけて、 *[Azure App Service - Sample Static HTML Site]* を *[Azure App Service Updated*] に変更するか、その他の任意のものに変更します。
+2. (＜title＞ではなく) **＜h1＞見出しタグ** を見つけて、 *[Azure App Service - Sample Static HTML Site]* を *[Azure App Service Updated*] に変更するか、その他の任意のものに変更します。
 
 3. コマンド**ctrl-s**を使用して保存し、**ctrl-q**を使用して終了します。
 
