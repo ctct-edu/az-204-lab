@@ -56,7 +56,7 @@
 
 1. ラボWindows環境のデスクトップに **graphapp** という名前のフォルダーを作成します。
 
-2. **Visual Studio Code** を起動し、**[FIle] > [Open Folder...]** を選択し、上記の フォルダーを選択し、 **[Select Folder]** をクリックします。
+2. **Visual Studio Code** を起動し、**[File] > [Open Folder...]** を選択し、上記の フォルダーを選択し、 **[Select Folder]** をクリックします。
 
 3. **[Do you trust the authors of the files in this folder?]** ダイアログで  **[Trust the authers ～]** チェックボックスをオンにして **[Yes, I trust the authers]** をクリックしてください。
 
@@ -88,7 +88,7 @@
 
 このセクションでは、前に記録したシークレットを保持する **.env** ファイルを作成および編集します。
 
-1. 上のメニューで **[File] > [New FIle...]** を選択し、プロジェクト フォルダーに *.env* という名前のファイルを作成します。
+1. 上のメニューで **[File] > [New File...]** を選択し、プロジェクト フォルダーに *.env* という名前のファイルを作成します。
 
 2. **.env** ファイルを開き、次のコードを追加します。**YOUR_CLIENT_ID**を置き換え、**YOUR_TENANT_ID**前に記録した値に置き換えます。
 
