@@ -45,7 +45,7 @@
 
 4. 次のコマンドを実行して、リソース グループとアプリ名を保持する変数を設定します。使用するリソースグループがある場合は、**resourceGroup** の **rg-mywebapp** 値を置き換えることができます。コマンドの実行後に表示される **appName** の値をメモしておきます。この値は、この演習の後半で必要になります。
 
-   ※ XXにはUserXXと同じ2桁の数字を入力します。
+   ※ XXXXXXXXにはLabUser-XXXXXXXXと同じ8桁の数字を入力します。
 
    ```
    resourceGroup=rg-mywebapplodXXXXXXXX
