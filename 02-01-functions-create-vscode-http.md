@@ -144,7 +144,7 @@ Visual Studio Code は Azure Functions Core ツールと統合されているた
 
    | プロンプト                                        | アクション                                                   |
    | ------------------------------------------------- | ------------------------------------------------------------ |
-   | Select a resource to create                       | **[Create Function App in Azure...] を選択します。**         |
+   | Select a resource to create                       | **[Azure Functions:Create Function App in Azure...]** を選択します。 |
    | Enter a globally unique name for the function app | URL パスで有効な名前を入力します (例: )。入力した名前は、一意であることを確認するために検証されます。**`myfunctionappXXXXXXXX`を入力します。** |
    | Select a location for new resources               | パフォーマンスを向上させるには、お近くの地域(Japan East 等)を選択してください。 |
    | Select a runtime stack                            | **[.NET 8.0 Isolated]** を選択します。                       |
