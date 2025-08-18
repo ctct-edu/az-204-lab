@@ -11,7 +11,7 @@
  - 結果を確認する
  - Azure Container Registry でイメージを実行する
 
- この演習は完了するまでに約 **20** 分かかります。
+ この演習は完了するまでに約 **15** 分かかります。
 
  ## Azure Container Registry リソースを作成する
 
