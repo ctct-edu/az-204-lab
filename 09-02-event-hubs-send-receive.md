@@ -193,7 +193,7 @@ Azure Event Hubs 名前空間は、Azure 内のイベント ハブ リソース�
 
 このセクションでは、イベントを送受信するプロデューサー クライアントとコンシューマー クライアントを作成するコードを追加します。
 
-1. **「CREATE A PRODUCER CLIENT AND SEND EVENTS」**コメントを見つけ、コメントの直後に次のコードを追加します。コード内のコメントを必ず確認してください。
+1. **「CREATE A PRODUCER CLIENT AND SEND EVENTS」** コメントを見つけ、コメントの直後に次のコードを追加します。コード内のコメントを必ず確認してください。
 
    ```
    // Create a producer client to send events to the event hub
