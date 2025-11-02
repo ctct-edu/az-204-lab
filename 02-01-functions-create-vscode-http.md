@@ -82,21 +82,25 @@ Visual Studio Code は Azure Functions Core ツールと統合されているた
 
 1. ターミナルが Visual Studio Code で開いていることを確認します。ターミナルを開くには、メニューバーで **Terminal** を選択し、次に **New Terminal** を選択します。
 
-2. **F5** キーを押して、デバッガーで関数アプリ プロジェクトを開始します。コアツールからの出力が**Terminal**パネルに表示されます。アプリが**Terminal**パネルで起動します。HTTP トリガー関数の URL エンドポイントがローカルで実行されていることがわかります。
+2. **F5** キーを押して、デバッガーで関数アプリ プロジェクトを開始します。
+
+   「Azure Functions requires a storage account to be configured.」のメッセージが表示された場合は **[Skip for now]** でスキップします。
+
+3. コアツールからの出力が**Terminal**パネルに表示されます。アプリが**Terminal**パネルで起動します。HTTP トリガー関数の URL エンドポイントがローカルで実行されていることがわかります。
 
    [![](./media/run-function-local.png)](https://github.com/MicrosoftLearning/mslearn-azure-developer/blob/main/instructions/azure-functions/media/01/run-function-local.png)
 
-3. Core Tools を実行した状態で、**Azure** 拡張機能を開きます。拡張機能の [**WorkSpace**] セクションで、 **[Local Project**] > [**Functions**] を展開します。**HttpExample** 関数を右クリックし、 **[Execute Function Now**] を選択します。
+4. Core Tools を実行した状態で、**Azure** 拡張機能を開きます。拡張機能の [**WorkSpace**] セクションで、 **[Local Project**] > [**Functions**] を展開します。**HttpExample** 関数を右クリックし、 **[Execute Function Now**] を選択します。
 
    [![](./media/execute-function-local.png)](https://github.com/MicrosoftLearning/mslearn-azure-developer/blob/main/instructions/azure-functions/media/01/execute-function-local.png)
 
-4. [**Enter Request Body**] に、要求メッセージ本文の値 を入力します。**Enter** キーを押して、この要求メッセージを関数に送信します。関数がローカルで実行され、応答が返されると、Visual Studio Code で通知が発生します。`{ "name": "Azure" }`
+5. [**Enter Request Body**] に、要求メッセージ本文の値 を入力します。**Enter** キーを押して、この要求メッセージを関数に送信します。関数がローカルで実行され、応答が返されると、Visual Studio Code で通知が発生します。`{ "name": "Azure" }`
 
-   通知ベル アイコンを選択して、通知を表示します。関数の実行に関する情報は**、ターミナル**パネルに表示されます。
+   通知ベル アイコンを選択して、通知を表示します。
 
    ![](./media/function_execute.png)
 
-5. **Shift + F5** キーを押して Core Tools を停止し、デバッガーを切断します。
+6. **Shift + F5** キーを押して Core Tools を停止し、デバッガーを切断します。
 
 関数がローカル コンピューターで正しく実行されることを確認したら、Visual Studio Code を使用してプロジェクトを Azure に直接発行します。
 
@@ -144,7 +148,7 @@ Visual Studio Code は Azure Functions Core ツールと統合されているた
 
    | プロンプト                                        | アクション                                                   |
    | ------------------------------------------------- | ------------------------------------------------------------ |
-   | Select a resource to create                       | **[Azure Functions:Create Function App in Azure...]** を選択します。 |
+   | Select a resource to create                       | **[Create Function App in Azure...]** を選択します。         |
    | Enter a globally unique name for the function app | URL パスで有効な名前を入力します (例: )。入力した名前は、一意であることを確認するために検証されます。**`myfunctionappXXXXXXXX`を入力します。** |
    | Select a location for new resources               | パフォーマンスを向上させるには、お近くの地域(Japan East 等)を選択してください。 |
    | Select a runtime stack                            | **[.NET 8.0 Isolated]** を選択します。                       |
@@ -168,7 +172,7 @@ Visual Studio Code は Azure Functions Core ツールと統合されているた
 
 > **!重要:** 既存の関数にパブリッシュすると、以前のデプロイメントが上書きされます。
 
-1. コVisual Studio Code で、F1 キーを押してコマンド パレットを開き、 **Azure Functions: Deploy to Function App...** を検索して実行します。
+1. Visual Studio Code で、F1 キーを押してコマンド パレットを開き、 **Azure Functions:Deploy to Function App...** を検索して実行します。
 
 3. **作成した関数アプリ(myfunctionappXXXXXXXX)を選択します。** 以前のデプロイを上書きするように求められたら、 **[Deploy]** を選択して、関数コードを新しい関数アプリ リソースにデプロイします。
 
