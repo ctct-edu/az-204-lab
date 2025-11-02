@@ -68,7 +68,7 @@ az provider show --namespace Microsoft.EventGrid --query "registrationState"
 
 
 
-> **手記：**この手順は、以前に Event Grid を使用したことのないサブスクリプションでのみ必要です。
+> この手順は、以前に Event Grid を使用したことのないサブスクリプションでのみ必要です。
 
 
 
