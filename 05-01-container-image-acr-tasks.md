@@ -11,7 +11,7 @@
  - 結果を確認する
  - Azure Container Registry でイメージを実行する
 
- この演習は完了するまでに約 **15** 分かかります。
+ この演習は完了するまでに約 **10** 分かかります。
 
  ## Azure Container Registry リソースを作成する
 
@@ -81,51 +81,6 @@
     
     
     Run ID: cf1 was successful after 11s
-    ```
-
-    
-
- ## 結果を確認する
-
- 
-
- 1. 次のコマンドを実行して、レジストリ内のリポジトリを一覧表示します。
-
-    ※ XXXXXXXXにはLabUser-XXXXXXXXと同じ8桁の数字を入力します。
-
-    ```
-    az acr repository list --name mycontainerregistryXXXXXXXX --output table
-    ```
-
-    
-
-    アウトプット：
-
-    ```
-    Result
-    ----------------
-    sample/hello-world
-    ```
-
-    
-
- 2. 次のコマンドを実行して、**sample/hello-world** リポジトリのタグを一覧表示します。
-
-    ※ XXXXXXXXにはLabUser-XXXXXXXXと同じ8桁の数字を入力します。
-
-    ```
-    az acr repository show-tags --name mycontainerregistryXXXXXXXX \
-        --repository sample/hello-world --output table
-    ```
-
-    
-
-    アウトプット：
-
-    ```
-    Result
-    --------
-    v1
     ```
 
     
