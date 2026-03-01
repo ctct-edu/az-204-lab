@@ -103,7 +103,7 @@ Windows 11 デスクトップでタスク バーを探します。 タスク バ
     az login
     ```
 
-1. **[Microsoft Edge]** ブラウザー ウィンドウで、講師が指示したアカウントのIDとパスワードを入力し、 **[サインイン]** を選択します。「Microsoft account」と「Work or school account」の選択では**「Work or school account」** を選びます。
+1. **[Microsoft Edge]** ブラウザー ウィンドウで、講師が指示したアカウントのIDとパスワードを入力し、 **[サインイン]** を選択します。「Microsoft account」と「Work or school account」の選択では **「Work or school account」** を選びます。
     サインイン中に以下の画面が出た場合は **[いいえ、このアプリのみ]** を選択します。
 
     ![](./media/OnlyThisApp.jpg)
