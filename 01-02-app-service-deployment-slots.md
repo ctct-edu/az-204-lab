@@ -33,7 +33,7 @@
 
    クラウド シェルは、Azure portal の下部にあるウィンドウにコマンド ライン インターフェイスを提供します。
 
-4. 次のコマンドを実行して、リソース グループとアプリ名を保持する変数を設定します。使用するリソースグループがある場合は、**resourceGroup** の **rg-mywebapp** 値を置き換えることができます。コマンドの実行後に表示される **appName** の値をメモしておきます。この値は、この演習の後半で必要になります。
+3. 次のコマンドを実行して、リソース グループとアプリ名を保持する変数を設定します。使用するリソースグループがある場合は、**resourceGroup** の **rg-mywebapp** 値を置き換えることができます。コマンドの実行後に表示される **appName** の値をメモしておきます。この値は、この演習の後半で必要になります。
 
    ※ XXXXXXXXにはLabUser-XXXXXXXXと同じ8桁の数字を入力します。
 
@@ -43,10 +43,10 @@
    appName=mywebappXXXXXXXX
    echo $appName
    ```
+
    
-   
-   
-5. **az appservice plan create** コマンドおよび **az webapp create** コマンドを実行します。
+
+4. **az appservice plan create** コマンドおよび **az webapp create** コマンドを実行します。
 
    **手記：** このコマンドの実行には数分かかる場合があります。
 
@@ -54,14 +54,16 @@
    az appservice plan create --name $appName --resource-group $resourceGroup --sku P0V3
    az webapp create --resource-group $resourceGroup --plan $appName --name $appName
    ```
-   
-   
-   
-   デプロイが完了したので、Web アプリを表示します。
-   
-6. Azure portal で、デプロイした Web アプリに移動します。**[リソース、サービス、ドキュメントの検索 (G + /)]** 検索バーに先ほどメモした名前を入力し、一覧からリソースを選択できます。
 
-7. [**要点**] セクションの [**既定のドメイン]** フィールドにある Web アプリへのリンクを選択します。リンクをクリックすると、サイトが新しいタブで開きます。
+   
+
+   デプロイが完了したので、Web アプリを表示します。
+
+5. Azure portal で、デプロイした Web アプリに移動します。**[リソース、サービス、ドキュメントの検索 (G + /)]** 検索バーに先ほどメモした名前を入力し、一覧からリソースを選択できます。
+
+   ※ App Service プランと App Service が同名のため、両方が表示されます。App Service の方を選択してください。
+
+6. [**要点**] セクションの [**既定のドメイン]** フィールドにある Web アプリへのリンクを選択します。リンクをクリックすると、サイトが新しいタブで開きます。
 
 
 
