@@ -112,7 +112,7 @@ Windows 11 デスクトップでタスク バーを探します。 タスク バ
 
      ----
 
-     The default is marked with an *; the default tenant is 'CTCテクノロジー株式会社' and subscription is 'Microsoft Azure スポンサー プラン' (972bbaa8-e51c-4cf4-962f-6765f6b9c034).
+     The default is marked with an *; the default tenant is 'XXXXXXXXXXXXXXXX' and subscription is ～ .
 
      Select a subscription and tenant (Type a number or Enter for no changes):
 
@@ -123,7 +123,7 @@ Windows 11 デスクトップでタスク バーを探します。 タスク バ
 1. 次のコマンド（下記の通り変更が必要）を入力してストレージアカウントを作成します。
 
     ```
-    az storage account create --name （ストレージ名） --location eastus2 --resource-group （リソースグループ名） --sku Standard_LRS
+    az storage account create --name （ストレージ名） --location japaneast --resource-group （リソースグループ名） --sku Standard_LRS
     ```
 
     **（ストレージ名）は一意となる文字列に変更してください。**
@@ -135,7 +135,7 @@ Windows 11 デスクトップでタスク バーを探します。 タスク バ
 1. 次のコマンド（下記の通り変更が必要）を入力して関数アプリを作成します。
 
    ```
-   az functionapp create --resource-group （リソースグループ名） --consumption-plan-location eastus2 --runtime dotnet-isolated --functions-version 4 --name （関数アプリ名） --storage-account （ストレージ名）
+   az functionapp create --resource-group （リソースグループ名） --consumption-plan-location japaneast --runtime dotnet-isolated --functions-version 4 --name （関数アプリ名） --storage-account （ストレージ名）
    ```
 
    **（リソースグループ名） は講師に確認してください。**
