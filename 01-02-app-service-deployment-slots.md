@@ -64,7 +64,7 @@
    ```
    cd html-docs-hello-world
    
-   az webapp up -g $resourceGroup -n $appName --sku P0V3 --html
+   az webapp up -g $resourceGroup -n $appName --sku P0V3 --html --basic-auth
    ```
    
    
