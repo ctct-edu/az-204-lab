@@ -46,12 +46,13 @@
    
    
    
-5. **az webapp up** コマンドを実行します。
+5. **az appservice plan create** コマンドおよび **az webapp create** コマンドを実行します。
 
    **手記：** このコマンドの実行には数分かかる場合があります。
 
    ```
-   az webapp create -g $resourceGroup -n $appName --plan $appName --sku P0V3 --html
+   az appservice plan create --name $appName --resource-group $resourceGroup --sku P0V3
+   az webapp create --resource-group $resourceGroup --plan $appName --name $appName
    ```
    
    
