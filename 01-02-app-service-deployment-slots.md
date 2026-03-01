@@ -51,7 +51,7 @@
    **手記：** このコマンドの実行には数分かかる場合があります。
 
    ```
-   az webapp up -g $resourceGroup -n $appName --sku P0V3 --html
+   az webapp create -g $resourceGroup -n $appName --plan $appName --sku P0V3 --html
    ```
    
    
