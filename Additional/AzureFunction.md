@@ -151,7 +151,7 @@ Windows 11 デスクトップでタスク バーを探します。 タスク バ
 1. 次のコマンド（下記の通り変更が必要）を入力して関数アプリを作成します。
 
     ```
-    func azure functionapp publish（関数アプリ名） --dotnet-version 8.0
+    func azure functionapp publish （関数アプリ名） --dotnet-version 8.0
     ```
 
     **（関数アプリ名）は前の手順で作成したものの名前に変更してください。**
